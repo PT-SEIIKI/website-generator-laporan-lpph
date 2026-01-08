@@ -1,0 +1,87 @@
+Kamu adalah AI Fullstack Engineer profesional.
+Buatkan sebuah website menggunakan NextJS (App Router), PostgreSQL, dan TailwindCSS.
+
+TUJUAN APLIKASI:
+Website ini digunakan untuk membuat dan meng-generate 1 halaman laporan SLO instalasi listrik
+yang formatnya tidak baku dan fleksibel.
+
+KONSEP UTAMA:
+- Website bukan untuk mengisi data laporan secara lengkap
+- Website hanya sebagai "Layout Builder + Preview Laporan"
+- User hanya menginput:
+  - Kop surat (gambar)
+  - Tanda tangan (gambar)
+  - Foto-foto lapangan
+- Data tabel identitas di bagian atas laporan akan DIKOSONGKAN
+  agar diisi manual setelah dicetak
+
+FITUR WAJIB:
+
+1. HALAMAN LAYOUT BUILDER
+- User dapat memilih:
+  - Jumlah kolom (1, 2, atau 3)
+  - Lebar kolom (contoh: 50:50, 60:40, 70:30)
+  - Jumlah baris per kolom
+- Setiap cell (row × column) bisa bertipe:
+  - image + caption
+  - kosong (spacer)
+- Layout disimpan dalam bentuk JSON
+
+2. LIVE PREVIEW A4
+- Preview halaman laporan secara realtime
+- Ukuran halaman harus A4 (210mm x 297mm)
+- Menggunakan CSS Grid
+- Border tabel terlihat
+- Caption berada di bawah gambar
+- Header dan footer selalu fixed
+
+3. HEADER LAPORAN (STATIS)
+- Logo perusahaan (upload)
+- Judul laporan: "VISUAL TEST ITEM – UJI LAIK OPERASI"
+- Nomor dokumen (hardcode)
+
+4. TABEL IDENTITAS (KOSONG)
+- Tampilkan tabel identitas seperti:
+  Pemilik, Alamat, Daya Terpasang, Tahun Operasi, dll
+- Value dikosongkan dan hanya berupa garis (__________)
+- Tidak ada input form untuk tabel ini
+
+5. FOOTER LAPORAN
+- Upload tanda tangan
+- Nama petugas (input text)
+- Tahun operasi
+
+6. DATABASE (PostgreSQL)
+Buat schema minimal:
+- reports
+  - id
+  - layout_json
+  - header_logo
+  - footer_signature
+  - officer_name
+  - created_at
+
+7. TEKNIS
+- Gunakan NextJS App Router
+- Gunakan TailwindCSS
+- Gunakan Prisma sebagai ORM
+- Gunakan API Route untuk simpan & load layout
+- Tidak perlu autentikasi
+- Fokus ke clean code dan modular component
+
+8. PRINT
+- Halaman harus bisa langsung di-print
+- Gunakan CSS @media print
+- Hindari page break di tengah cell
+
+OUTPUT YANG DIHARAPKAN:
+- Struktur folder NextJS
+- Komponen utama (LayoutBuilder, PreviewPage, Header, Footer, GridSection)
+- Contoh layout JSON
+- Contoh schema Prisma
+- Penjelasan singkat arsitektur
+
+BATASAN:
+- Jangan membuat sistem laporan kompleks
+- Jangan memaksa input data tabel identitas
+- Fokus ke fleksibilitas layout dan preview
