@@ -58,12 +58,11 @@ export function ReportGrid({ layout, onChange, readOnly = false }: ReportGridPro
     onChange({ sections: getSections().filter(s => s.id !== sectionId) });
   };
 
-  const updateSection = (sectionId: string, updates: Partial<ReportGridSection> | Partial<TableSection>) => {
+  const updateSection = (sectionId: string, updates: Partial<TableSection> | Partial<ReportGridSection>) => {
     onChange({
       sections: getSections().map(section => {
         if (section.id !== sectionId) return section;
-        // @ts-ignore - Type narrowing for section updates
-        return { ...section, ...updates };
+        return { ...section, ...updates } as (TableSection | ReportGridSection);
       }),
     });
   };
