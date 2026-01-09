@@ -56,6 +56,8 @@ export type TableSection = {
   id: string;
   type: "table";
   title?: string;
+  evaluationLabel?: string;
+  description?: string;
   numCols: number;
   colLabels?: string[];
   colWidths: string[];

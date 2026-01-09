@@ -55,7 +55,18 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
               <th className="border border-slate-900 p-1 font-bold text-center w-1/3 uppercase">Keterangan</th>
             </tr>
             <tr className="bg-white">
-              <td className="border border-slate-900 p-1 text-center text-[10px]">Ada dan Sesuai</td>
+              <td className="border border-slate-900 p-1 text-center text-[10px]">
+                {readOnly ? (
+                  section.evaluationLabel || "Ada dan Sesuai"
+                ) : (
+                  <Input 
+                    value={section.evaluationLabel || ""} 
+                    onChange={e => onChange({...section, evaluationLabel: e.target.value})}
+                    placeholder="Hasil evaluasi..."
+                    className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase"
+                  />
+                )}
+              </td>
               <td className="border border-slate-900 p-1 text-center text-[10px] font-medium">
                 {readOnly ? (
                   section.title || "Terpasang lengkap"
@@ -63,13 +74,22 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                   <Input 
                     value={section.title || ""} 
                     onChange={e => onChange({...section, title: e.target.value})}
-                    placeholder="Judul Tabel..."
-                    className="h-5 text-[10px] text-center border-0 bg-transparent p-0"
+                    placeholder="Spesifikasi Teknik..."
+                    className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase"
                   />
                 )}
               </td>
               <td className="border border-slate-900 p-1 text-center text-[10px]">
-                Kondisi peralatan terpasang sesuai dan berfungsi dengan normal
+                {readOnly ? (
+                  section.description || "Berfungsi dengan normal"
+                ) : (
+                  <Input 
+                    value={section.description || ""} 
+                    onChange={e => onChange({...section, description: e.target.value})}
+                    placeholder="Keterangan..."
+                    className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase"
+                  />
+                )}
               </td>
             </tr>
           </thead>

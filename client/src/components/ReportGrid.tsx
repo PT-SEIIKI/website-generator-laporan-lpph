@@ -35,12 +35,15 @@ export function ReportGrid({ layout, onChange, readOnly = false }: ReportGridPro
   };
 
   const addTableSection = (numCols: number = 3) => {
-    const colLabels = numCols === 3 ? ["DATA TEKNIK", "INCOMING", "OUTGOING"] : Array(numCols).fill("LABEL");
+    const colLabels = numCols === 3 ? ["", "", ""] : Array(numCols).fill("");
     const colWidths = numCols === 2 ? ["50%", "50%"] : numCols === 3 ? ["40%", "30%", "30%"] : Array(numCols).fill(`${100/numCols}%`);
     
     const newSection: TableSection = {
       id: crypto.randomUUID(),
       type: "table",
+      title: "",
+      evaluationLabel: "",
+      description: "",
       numCols,
       colLabels,
       colWidths,
