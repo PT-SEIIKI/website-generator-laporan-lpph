@@ -91,9 +91,9 @@ export default function ReportBuilder() {
     const opt = {
       margin: 0,
       filename: `${docNumber || "report"}.pdf`,
-      image: { type: "jpeg", quality: 0.98 },
+      image: { type: "jpeg" as const, quality: 0.98 },
       html2canvas: { scale: 2 },
-      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+      jsPDF: { unit: "mm", format: "a4" as const, orientation: "portrait" as const },
     };
 
     const html2pdf = (await import("html2pdf.js")).default;
@@ -101,42 +101,254 @@ export default function ReportBuilder() {
   };
 
   const handleExportWord = async () => {
-    const { Document, Packer, Paragraph, Table, TableRow, TableCell, BorderStyle, convertInchesToTwip } = await import("docx");
+    const { Document, Packer, Paragraph, Table, TableRow, TableCell, BorderStyle, convertInchesToTwip, ImageRun, TextRun, HeadingLevel } = await import("docx");
     
-    const doc = new Document({
-      sections: [{
+    const children: any[] = [];
+    
+    // Header section
+    children.push(
+      new Paragraph({
         children: [
-          new Paragraph({
+          new TextRun({
             text: docNumber || "Report",
+            bold: true,
+            size: 32,
+          }),
+        ],
+        heading: HeadingLevel.TITLE,
+      }),
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: headerTitle || "Title",
             bold: true,
             size: 28,
           }),
-          new Paragraph({
-            text: headerTitle || "Title",
+        ],
+        heading: HeadingLevel.HEADING_1,
+      }),
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: `Revisi: ${headerRevision || "0"}`,
+            size: 24,
+          }),
+        ],
+      }),
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: `Tgl Terbit: ${headerIssuedDate || "-"}`,
+            size: 24,
+          }),
+        ],
+      }),
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: `Tgl Revisi: ${headerRevisionDate || "-"}`,
+            size: 24,
+          }),
+        ],
+      })
+    );
+
+    // Add spacing
+    children.push(new Paragraph({ text: "" }));
+
+    // Process layout sections
+    if (layout.sections && layout.sections.length > 0) {
+      for (const section of layout.sections) {
+        if (section.type === 'table') {
+          // Create table for table sections
+          const tableRows = [
+            new TableRow({
+              children: [
+                new TableCell({
+                  children: [new Paragraph({ text: "HASIL EVALUASI" })],
+                  borders: {
+                    top: { style: BorderStyle.SINGLE, size: 1 },
+                    left: { style: BorderStyle.SINGLE, size: 1 },
+                    bottom: { style: BorderStyle.SINGLE, size: 1 },
+                    right: { style: BorderStyle.SINGLE, size: 1 },
+                  },
+                }),
+                new TableCell({
+                  children: [new Paragraph({ text: "SPESIFIKASI TEKNIK" })],
+                  borders: {
+                    top: { style: BorderStyle.SINGLE, size: 1 },
+                    left: { style: BorderStyle.SINGLE, size: 1 },
+                    bottom: { style: BorderStyle.SINGLE, size: 1 },
+                    right: { style: BorderStyle.SINGLE, size: 1 },
+                  },
+                }),
+                new TableCell({
+                  children: [new Paragraph({ text: "KETERANGAN" })],
+                  borders: {
+                    top: { style: BorderStyle.SINGLE, size: 1 },
+                    left: { style: BorderStyle.SINGLE, size: 1 },
+                    bottom: { style: BorderStyle.SINGLE, size: 1 },
+                    right: { style: BorderStyle.SINGLE, size: 1 },
+                  },
+                }),
+              ],
+            })
+          ];
+
+          // Add data rows
+          if (section.rows && Array.isArray(section.rows)) {
+            for (const row of section.rows) {
+              tableRows.push(
+                new TableRow({
+                  children: [
+                    new TableCell({
+                      children: [new Paragraph({ text: row.cells[0] || "" })],
+                      borders: {
+                        top: { style: BorderStyle.SINGLE, size: 1 },
+                        left: { style: BorderStyle.SINGLE, size: 1 },
+                        bottom: { style: BorderStyle.SINGLE, size: 1 },
+                        right: { style: BorderStyle.SINGLE, size: 1 },
+                      },
+                    }),
+                    new TableCell({
+                      children: [new Paragraph({ text: row.cells[1] || "" })],
+                      borders: {
+                        top: { style: BorderStyle.SINGLE, size: 1 },
+                        left: { style: BorderStyle.SINGLE, size: 1 },
+                        bottom: { style: BorderStyle.SINGLE, size: 1 },
+                        right: { style: BorderStyle.SINGLE, size: 1 },
+                      },
+                    }),
+                    new TableCell({
+                      children: [new Paragraph({ text: row.cells[2] || "" })],
+                      borders: {
+                        top: { style: BorderStyle.SINGLE, size: 1 },
+                        left: { style: BorderStyle.SINGLE, size: 1 },
+                        bottom: { style: BorderStyle.SINGLE, size: 1 },
+                        right: { style: BorderStyle.SINGLE, size: 1 },
+                      },
+                    }),
+                  ],
+                })
+              );
+            }
+          }
+
+          children.push(
+            new Table({
+              rows: tableRows,
+              width: {
+                size: 100,
+                type: "pct",
+              },
+            })
+          );
+        } else if (section.type === 'grid') {
+          // Create grid layout for image grids
+          const gridCells = section.cells.map((cell: any) => {
+            if (cell.type === 'image' && cell.imageUrl) {
+              return new TableCell({
+                children: [
+                  new Paragraph({
+                    children: [
+                      new TextRun({
+                        text: `[Image: ${cell.caption || 'No caption'}]`,
+                        italics: true,
+                      }),
+                    ],
+                  }),
+                  new Paragraph({
+                    children: [
+                      new TextRun({
+                        text: cell.caption || "",
+                        size: 20,
+                      }),
+                    ],
+                  }),
+                ],
+                borders: {
+                  top: { style: BorderStyle.SINGLE, size: 1 },
+                  left: { style: BorderStyle.SINGLE, size: 1 },
+                  bottom: { style: BorderStyle.SINGLE, size: 1 },
+                  right: { style: BorderStyle.SINGLE, size: 1 },
+                },
+              });
+            } else {
+              return new TableCell({
+                children: [new Paragraph({ text: "" })],
+                borders: {
+                  top: { style: BorderStyle.SINGLE, size: 1 },
+                  left: { style: BorderStyle.SINGLE, size: 1 },
+                  bottom: { style: BorderStyle.SINGLE, size: 1 },
+                  right: { style: BorderStyle.SINGLE, size: 1 },
+                },
+              });
+            }
+          });
+
+          children.push(
+            new Table({
+              rows: [
+                new TableRow({
+                  children: gridCells,
+                }),
+              ],
+              width: {
+                size: 100,
+                type: "pct",
+              },
+            })
+          );
+        }
+        
+        // Add spacing between sections
+        children.push(new Paragraph({ text: "" }));
+      }
+    }
+
+    // Footer section with signatures
+    children.push(
+      new Paragraph({ text: "" }),
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: "TENAGA TEKNIK",
             bold: true,
             size: 24,
           }),
-          new Paragraph({
-            text: `Revisi: ${headerRevision || "0"}`,
-            size: 22,
-          }),
-          new Paragraph({
-            text: `Tgl Terbit: ${headerIssuedDate || "-"}`,
-            size: 22,
-          }),
-          new Paragraph({
-            text: "\n\nReport Content\n\n",
-            size: 22,
-          }),
-          new Paragraph({
-            text: `Tenaga Teknik: ${technicianName || "_"}`,
-            size: 22,
-          }),
-          new Paragraph({
-            text: `Saksi Pemilik Instalasi: ${ownerName || "_"}`,
+        ],
+      }),
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: technicianName || "_",
             size: 22,
           }),
         ],
+      }),
+      new Paragraph({ text: "" }),
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: "SAKSI PEMILIK INSTALASI",
+            bold: true,
+            size: 24,
+          }),
+        ],
+      }),
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: ownerName || "_",
+            size: 22,
+          }),
+        ],
+      })
+    );
+
+    const doc = new Document({
+      sections: [{
+        children,
       }],
     });
 
