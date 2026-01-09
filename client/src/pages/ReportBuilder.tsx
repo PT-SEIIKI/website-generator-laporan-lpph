@@ -103,6 +103,18 @@ export default function ReportBuilder() {
   const handleExportWord = async () => {
     const { Document, Packer, Paragraph, Table, TableRow, TableCell, BorderStyle, WidthType, AlignmentType, ImageRun, TextRun, VerticalAlign } = await import("docx");
     
+    // Helper to fetch image and convert to Uint8Array
+    const fetchImageBuffer = async (url: string) => {
+      try {
+        const response = await fetch(url);
+        const arrayBuffer = await response.arrayBuffer();
+        return new Uint8Array(arrayBuffer);
+      } catch (err) {
+        console.error("Failed to fetch image:", url, err);
+        return null;
+      }
+    };
+
     // Helper for cell borders
     const standardBorders = {
       top: { style: BorderStyle.SINGLE, size: 1 },
@@ -114,6 +126,8 @@ export default function ReportBuilder() {
     const children: any[] = [];
     
     // 1. Header Table (3 columns)
+    const logoBuffer = logoUrl ? await fetchImageBuffer(logoUrl) : null;
+    
     const headerTable = new Table({
       width: { size: 100, type: WidthType.PERCENTAGE },
       rows: [
@@ -123,7 +137,15 @@ export default function ReportBuilder() {
             new TableCell({
               width: { size: 25, type: WidthType.PERCENTAGE },
               children: [
-                new Paragraph({
+                logoBuffer ? new Paragraph({
+                  alignment: AlignmentType.CENTER,
+                  children: [
+                    new ImageRun({
+                      data: logoBuffer,
+                      transformation: { width: 60, height: 60 },
+                    }),
+                  ],
+                }) : new Paragraph({
                   alignment: AlignmentType.CENTER,
                   children: [new TextRun({ text: "LOGO", bold: true })]
                 })
@@ -219,21 +241,45 @@ export default function ReportBuilder() {
           // Process image grid as a table for layout stability
           const rows: TableRow[] = [];
           for (let i = 0; i < section.cells.length; i += 3) {
-            const rowCells = section.cells.slice(i, i + 3).map((cell: any) => new TableCell({
-              width: { size: 33.33, type: WidthType.PERCENTAGE },
-              children: [
-                new Paragraph({
-                  alignment: AlignmentType.CENTER,
-                  children: [new TextRun({ text: `[Image: ${cell.caption || 'Photo'}]`, italics: true, color: "888888" })]
-                }),
-                new Paragraph({
-                  alignment: AlignmentType.CENTER,
-                  children: [new TextRun({ text: cell.caption || "", size: 16, bold: true })]
-                })
-              ],
-              borders: standardBorders,
-            }));
-            rows.push(new TableRow({ children: rowCells }));
+            const cellsBatch = section.cells.slice(i, i + 3);
+            const rowChildren = [];
+            
+            for (const cell of cellsBatch) {
+              const imgBuffer = cell.url ? await fetchImageBuffer(cell.url) : null;
+              rowChildren.push(new TableCell({
+                width: { size: 33.33, type: WidthType.PERCENTAGE },
+                children: [
+                  imgBuffer ? new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [
+                      new ImageRun({
+                        data: imgBuffer,
+                        transformation: { width: 150, height: 150 },
+                      }),
+                    ],
+                  }) : new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [new TextRun({ text: `[Image: ${cell.caption || 'Photo'}]`, italics: true, color: "888888" })]
+                  }),
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: [new TextRun({ text: cell.caption || "", size: 16, bold: true })]
+                  })
+                ],
+                borders: standardBorders,
+              }));
+            }
+            
+            // Fill remaining cells in the row if less than 3
+            while (rowChildren.length < 3) {
+              rowChildren.push(new TableCell({
+                width: { size: 33.33, type: WidthType.PERCENTAGE },
+                children: [new Paragraph({ text: "" })],
+                borders: standardBorders,
+              }));
+            }
+
+            rows.push(new TableRow({ children: rowChildren }));
           }
           children.push(new Table({ rows, width: { size: 100, type: WidthType.PERCENTAGE } }), new Paragraph({ text: "" }));
         }
@@ -241,6 +287,9 @@ export default function ReportBuilder() {
     }
 
     // 3. Footer Table (Signatures)
+    const techSigBuffer = technicianSignatureUrl ? await fetchImageBuffer(technicianSignatureUrl) : null;
+    const ownerSigBuffer = ownerSignatureUrl ? await fetchImageBuffer(ownerSignatureUrl) : null;
+
     const footerTable = new Table({
       width: { size: 100, type: WidthType.PERCENTAGE },
       rows: [
@@ -249,7 +298,15 @@ export default function ReportBuilder() {
             new TableCell({
               children: [
                 new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "Tenaga Teknik", bold: true })] }),
-                new Paragraph({ text: "", spacing: { before: 400, after: 400 } }),
+                techSigBuffer ? new Paragraph({
+                  alignment: AlignmentType.CENTER,
+                  children: [
+                    new ImageRun({
+                      data: techSigBuffer,
+                      transformation: { width: 100, height: 60 },
+                    }),
+                  ],
+                }) : new Paragraph({ text: "", spacing: { before: 400, after: 400 } }),
                 new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: technicianName || "" })] }),
               ],
               borders: standardBorders,
@@ -257,7 +314,15 @@ export default function ReportBuilder() {
             new TableCell({
               children: [
                 new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "Saksi Pemilik Instalasi", bold: true })] }),
-                new Paragraph({ text: "", spacing: { before: 400, after: 400 } }),
+                ownerSigBuffer ? new Paragraph({
+                  alignment: AlignmentType.CENTER,
+                  children: [
+                    new ImageRun({
+                      data: ownerSigBuffer,
+                      transformation: { width: 100, height: 60 },
+                    }),
+                  ],
+                }) : new Paragraph({ text: "", spacing: { before: 400, after: 400 } }),
                 new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: ownerName || "" })] }),
               ],
               borders: standardBorders,
