@@ -16,3 +16,6 @@
 [x] 10. Fixed cross-env dependency - installed cross-env package
 [x] 11. Import completed successfully
 [x] 12. Improved Word document generation layout to match the website (3-column header, better table styling, signature blocks, A4 sizing)
+[x] 13. Added padding to image grid cells (16px) and added border to images
+[x] 14. Enabled editing of table header labels (Hasil evaluasi, Spesifikasi Teknik, Keterangan)
+[x] 15. Fixed LSP errors in ReportBuilder.tsx and ReportGrid.tsx

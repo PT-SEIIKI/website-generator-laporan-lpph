@@ -50,9 +50,54 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
           <thead>
             {/* Main Evaluation Row */}
             <tr className="bg-white">
-              <th className="border border-slate-900 p-1 font-bold text-center w-1/3 uppercase">Hasil evaluasi</th>
-              <th className="border border-slate-900 p-1 font-bold text-center w-1/3 uppercase">Spesifikasi Teknik</th>
-              <th className="border border-slate-900 p-1 font-bold text-center w-1/3 uppercase">Keterangan</th>
+              <th className="border border-slate-900 p-1 font-bold text-center w-1/3 uppercase">
+                {readOnly ? (
+                  section.colLabels?.[0] || "Hasil evaluasi"
+                ) : (
+                  <Input 
+                    value={section.colLabels?.[0] || ""} 
+                    onChange={e => {
+                      const newLabels = [...(section.colLabels || Array(section.numCols).fill(""))];
+                      newLabels[0] = e.target.value;
+                      onChange({...section, colLabels: newLabels});
+                    }}
+                    placeholder="Hasil evaluasi..."
+                    className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase font-bold"
+                  />
+                )}
+              </th>
+              <th className="border border-slate-900 p-1 font-bold text-center w-1/3 uppercase">
+                {readOnly ? (
+                  section.colLabels?.[1] || "Spesifikasi Teknik"
+                ) : (
+                  <Input 
+                    value={section.colLabels?.[1] || ""} 
+                    onChange={e => {
+                      const newLabels = [...(section.colLabels || Array(section.numCols).fill(""))];
+                      newLabels[1] = e.target.value;
+                      onChange({...section, colLabels: newLabels});
+                    }}
+                    placeholder="Spesifikasi Teknik..."
+                    className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase font-bold"
+                  />
+                )}
+              </th>
+              <th className="border border-slate-900 p-1 font-bold text-center w-1/3 uppercase">
+                {readOnly ? (
+                  section.colLabels?.[2] || "Keterangan"
+                ) : (
+                  <Input 
+                    value={section.colLabels?.[2] || ""} 
+                    onChange={e => {
+                      const newLabels = [...(section.colLabels || Array(section.numCols).fill(""))];
+                      newLabels[2] = e.target.value;
+                      onChange({...section, colLabels: newLabels});
+                    }}
+                    placeholder="Keterangan..."
+                    className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase font-bold"
+                  />
+                )}
+              </th>
             </tr>
             <tr className="bg-white">
               <td className="border border-slate-900 p-1 text-center text-[10px]">

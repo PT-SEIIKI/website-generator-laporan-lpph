@@ -184,17 +184,17 @@ export default function ReportBuilder() {
             new TableRow({
               children: [
                 new TableCell({
-                  children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: section.config?.col1Label || "Hasil evaluasi", bold: true, size: 18 })] })],
+                  children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: (section as any).colLabels?.[0] || "Hasil evaluasi", bold: true, size: 18 })] })],
                   borders: standardBorders,
                   shading: { fill: "F2F2F2" },
                 }),
                 new TableCell({
-                  children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: section.config?.col2Label || "Pengukuran tahanan pembumian", bold: true, size: 18 })] })],
+                  children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: (section as any).colLabels?.[1] || "Spesifikasi Teknik", bold: true, size: 18 })] })],
                   borders: standardBorders,
                   shading: { fill: "F2F2F2" },
                 }),
                 new TableCell({
-                  children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: section.config?.col3Label || "Keterangan", bold: true, size: 18 })] })],
+                  children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: (section as any).colLabels?.[2] || "Keterangan", bold: true, size: 18 })] })],
                   borders: standardBorders,
                   shading: { fill: "F2F2F2" },
                 }),
@@ -204,14 +204,13 @@ export default function ReportBuilder() {
 
           if (section.rows && Array.isArray(section.rows)) {
             for (const row of section.rows) {
-              tableRows.push(
-                new TableRow({
-                  children: row.cells.map((cell: string) => new TableCell({
-                    children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: cell || "", size: 18 })] })],
-                    borders: standardBorders,
-                  })),
-                })
-              );
+              const docxRow = new TableRow({
+                children: row.cells.map((cell: string) => new TableCell({
+                  children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: cell || "", size: 18 })] })],
+                  borders: standardBorders,
+                })),
+              });
+              tableRows.push(docxRow);
             }
           }
 

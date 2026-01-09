@@ -69,7 +69,7 @@ export function ReportGrid({ layout, onChange, readOnly = false }: ReportGridPro
   };
 
   const updateCell = (sectionId: string, cellId: string, updates: Partial<ReportCell>) => {
-    const section = getSections().find(s => s.id === sectionId) as ReportGridSection;
+    const section = getSections().find(s => s.id === sectionId);
     if (!section || section.type !== "grid") return;
 
     const newCells = section.cells.map(cell => {
@@ -127,8 +127,8 @@ export function ReportGrid({ layout, onChange, readOnly = false }: ReportGridPro
                   readOnly ? "" : "hover:bg-slate-50"
                 )}>
                   {cell.type === "image" ? (
-                    <div className="space-y-0">
-                      <div className="relative aspect-[4/3] w-full bg-white flex items-center justify-center overflow-hidden border-b border-slate-900">
+                    <div className="space-y-0 p-4">
+                      <div className="relative aspect-[4/3] w-full bg-white flex items-center justify-center overflow-hidden border border-slate-900">
                         {cell.imageUrl ? (
                           <img 
                             src={cell.imageUrl} 
