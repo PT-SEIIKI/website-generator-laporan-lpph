@@ -19,3 +19,4 @@
 [x] 13. Added padding to image grid cells (16px) and added border to images
 [x] 14. Enabled editing of table header labels (Hasil evaluasi, Spesifikasi Teknik, Keterangan)
 [x] 15. Fixed LSP errors in ReportBuilder.tsx and ReportGrid.tsx
+[x] 16. Fixed issue where editing one table header affected all tables by correcting state update logic

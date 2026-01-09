@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 interface DataTableSectionProps {
   section: TableSection;
-  onChange: (section: TableSection) => void;
+  onChange: (updates: Partial<TableSection>) => void;
   readOnly?: boolean;
 }
 
@@ -59,7 +59,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                     onChange={e => {
                       const newLabels = [...(section.colLabels || Array(section.numCols).fill(""))];
                       newLabels[0] = e.target.value;
-                      onChange({...section, colLabels: newLabels});
+                      onChange({ colLabels: newLabels });
                     }}
                     placeholder="Hasil evaluasi..."
                     className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase font-bold"
@@ -75,7 +75,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                     onChange={e => {
                       const newLabels = [...(section.colLabels || Array(section.numCols).fill(""))];
                       newLabels[1] = e.target.value;
-                      onChange({...section, colLabels: newLabels});
+                      onChange({ colLabels: newLabels });
                     }}
                     placeholder="Spesifikasi Teknik..."
                     className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase font-bold"
@@ -91,7 +91,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                     onChange={e => {
                       const newLabels = [...(section.colLabels || Array(section.numCols).fill(""))];
                       newLabels[2] = e.target.value;
-                      onChange({...section, colLabels: newLabels});
+                      onChange({ colLabels: newLabels });
                     }}
                     placeholder="Keterangan..."
                     className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase font-bold"
@@ -106,7 +106,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                 ) : (
                   <Input 
                     value={section.evaluationLabel || ""} 
-                    onChange={e => onChange({...section, evaluationLabel: e.target.value})}
+                    onChange={e => onChange({ evaluationLabel: e.target.value })}
                     placeholder="Hasil evaluasi..."
                     className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase"
                   />
@@ -118,7 +118,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                 ) : (
                   <Input 
                     value={section.title || ""} 
-                    onChange={e => onChange({...section, title: e.target.value})}
+                    onChange={e => onChange({ title: e.target.value })}
                     placeholder="Spesifikasi Teknik..."
                     className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase"
                   />
@@ -130,7 +130,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                 ) : (
                   <Input 
                     value={section.description || ""} 
-                    onChange={e => onChange({...section, description: e.target.value})}
+                    onChange={e => onChange({ description: e.target.value })}
                     placeholder="Keterangan..."
                     className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase"
                   />
