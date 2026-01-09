@@ -77,13 +77,28 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
 
         {/* Nested Data Table */}
         <div className="mt-4 flex justify-center">
-          <table className="w-full max-w-[600px] text-[10px] border-collapse border border-slate-900">
+          <table className="w-full text-[10px] border-collapse border border-slate-900">
             <tbody>
-              {/* Optional Sub-header row for Incoming/Outgoing */}
+              {/* Dynamic Header row */}
               <tr className="bg-white">
-                <td className="border border-slate-900 p-1 font-bold text-center w-[40%] uppercase">Data Teknik</td>
-                <td className="border border-slate-900 p-1 font-bold text-center w-[30%] uppercase">Incoming</td>
-                <td className="border border-slate-900 p-1 font-bold text-center w-[30%] uppercase">Outgoing</td>
+                {Array.from({ length: section.numCols }).map((_, i) => (
+                  <td key={i} className="border border-slate-900 p-1 font-bold text-center uppercase" style={{ width: section.colWidths[i] }}>
+                    {readOnly ? (
+                      section.colLabels?.[i] || ""
+                    ) : (
+                      <Input
+                        value={section.colLabels?.[i] || ""}
+                        onChange={(e) => {
+                          const newLabels = [...(section.colLabels || Array(section.numCols).fill(""))];
+                          newLabels[i] = e.target.value;
+                          onChange({ ...section, colLabels: newLabels });
+                        }}
+                        placeholder="Label..."
+                        className="h-5 text-[10px] text-center border-0 bg-transparent p-0 font-bold uppercase"
+                      />
+                    )}
+                  </td>
+                ))}
               </tr>
               {section.rows.map((row, rowIndex) => (
                 <tr key={row.id} className="group relative">

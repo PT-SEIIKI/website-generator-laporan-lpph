@@ -7,6 +7,7 @@
     - Added 2 signature sections in footer (Tenaga Teknik + Saksi Pemilik Instalasi)
     - Added PDF download functionality
     - Added Word (.docx) download functionality
+    - Added configurable table sections with dynamic columns and labels
 [x] 5. Project migration complete and ready for use
 [x] 6. Fixed tsx dependency issue - installed tsx package
 [x] 7. Configured workflow with webview output on port 5000

@@ -34,15 +34,18 @@ export function ReportGrid({ layout, onChange, readOnly = false }: ReportGridPro
     onChange({ sections: [...getSections(), newSection] });
   };
 
-  const addTableSection = () => {
+  const addTableSection = (numCols: number = 3) => {
+    const colLabels = numCols === 3 ? ["DATA TEKNIK", "INCOMING", "OUTGOING"] : Array(numCols).fill("LABEL");
+    const colWidths = numCols === 2 ? ["50%", "50%"] : numCols === 3 ? ["40%", "30%", "30%"] : Array(numCols).fill(`${100/numCols}%`);
+    
     const newSection: TableSection = {
       id: crypto.randomUUID(),
       type: "table",
-      numCols: 3,
-      colWidths: ["40%", "30%", "30%"],
+      numCols,
+      colLabels,
+      colWidths,
       rows: [
-        { id: crypto.randomUUID(), cells: ["NOMOR CELL", "1", "2"] },
-        { id: crypto.randomUUID(), cells: ["MERK CUBICLE", "SCHNEIDER", "SCHNEIDER"] }
+        { id: crypto.randomUUID(), cells: Array(numCols).fill("") }
       ],
     };
     onChange({ sections: [...getSections(), newSection] });
@@ -193,9 +196,13 @@ export function ReportGrid({ layout, onChange, readOnly = false }: ReportGridPro
 
       {!readOnly && (
         <div className="flex items-center justify-center gap-4 py-8 border-t border-dashed border-slate-200 no-print flex-wrap">
-          <Button variant="outline" onClick={() => addTableSection()} className="gap-2">
+          <Button variant="outline" onClick={() => addTableSection(2)} className="gap-2">
             <TableIcon className="w-4 h-4" />
-            Add Table
+            Add Table (2 Col)
+          </Button>
+          <Button variant="outline" onClick={() => addTableSection(3)} className="gap-2">
+            <TableIcon className="w-4 h-4" />
+            Add Table (3 Col)
           </Button>
           <Button variant="outline" onClick={() => addGridSection(1)} className="gap-2">
             <div className="w-4 h-4 border border-current rounded-sm" />

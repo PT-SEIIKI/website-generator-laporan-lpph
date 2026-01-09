@@ -55,7 +55,9 @@ export type TableRow = {
 export type TableSection = {
   id: string;
   type: "table";
+  title?: string;
   numCols: number;
+  colLabels?: string[];
   colWidths: string[];
   rows: TableRow[];
 };
