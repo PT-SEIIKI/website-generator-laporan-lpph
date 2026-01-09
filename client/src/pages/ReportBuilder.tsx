@@ -101,253 +101,177 @@ export default function ReportBuilder() {
   };
 
   const handleExportWord = async () => {
-    const { Document, Packer, Paragraph, Table, TableRow, TableCell, BorderStyle, convertInchesToTwip, ImageRun, TextRun, HeadingLevel } = await import("docx");
+    const { Document, Packer, Paragraph, Table, TableRow, TableCell, BorderStyle, WidthType, AlignmentType, ImageRun, TextRun, VerticalAlign } = await import("docx");
     
+    // Helper for cell borders
+    const standardBorders = {
+      top: { style: BorderStyle.SINGLE, size: 1 },
+      left: { style: BorderStyle.SINGLE, size: 1 },
+      bottom: { style: BorderStyle.SINGLE, size: 1 },
+      right: { style: BorderStyle.SINGLE, size: 1 },
+    };
+
     const children: any[] = [];
     
-    // Header section
-    children.push(
-      new Paragraph({
-        children: [
-          new TextRun({
-            text: docNumber || "Report",
-            bold: true,
-            size: 32,
-          }),
-        ],
-        heading: HeadingLevel.TITLE,
-      }),
-      new Paragraph({
-        children: [
-          new TextRun({
-            text: headerTitle || "Title",
-            bold: true,
-            size: 28,
-          }),
-        ],
-        heading: HeadingLevel.HEADING_1,
-      }),
-      new Paragraph({
-        children: [
-          new TextRun({
-            text: `Revisi: ${headerRevision || "0"}`,
-            size: 24,
-          }),
-        ],
-      }),
-      new Paragraph({
-        children: [
-          new TextRun({
-            text: `Tgl Terbit: ${headerIssuedDate || "-"}`,
-            size: 24,
-          }),
-        ],
-      }),
-      new Paragraph({
-        children: [
-          new TextRun({
-            text: `Tgl Revisi: ${headerRevisionDate || "-"}`,
-            size: 24,
-          }),
-        ],
-      })
-    );
+    // 1. Header Table (3 columns)
+    const headerTable = new Table({
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      rows: [
+        new TableRow({
+          children: [
+            // Logo column
+            new TableCell({
+              width: { size: 25, type: WidthType.PERCENTAGE },
+              children: [
+                new Paragraph({
+                  alignment: AlignmentType.CENTER,
+                  children: [new TextRun({ text: "LOGO", bold: true })]
+                })
+              ],
+              borders: standardBorders,
+              verticalAlign: VerticalAlign.CENTER,
+            }),
+            // Title column
+            new TableCell({
+              width: { size: 50, type: WidthType.PERCENTAGE },
+              children: [
+                new Paragraph({
+                  alignment: AlignmentType.CENTER,
+                  children: [
+                    new TextRun({
+                      text: headerTitle || "EVALUASI HASIL UJI PERALATAN",
+                      bold: true,
+                      size: 24,
+                    })
+                  ]
+                }),
+                new Paragraph({
+                  alignment: AlignmentType.CENTER,
+                  children: [
+                    new TextRun({
+                      text: "- PENGUKURAN TAHANAN PEMBUMIAN -",
+                      bold: true,
+                      size: 20,
+                    })
+                  ]
+                })
+              ],
+              borders: standardBorders,
+              verticalAlign: VerticalAlign.CENTER,
+            }),
+            // Info column
+            new TableCell({
+              width: { size: 25, type: WidthType.PERCENTAGE },
+              children: [
+                new Paragraph({ children: [new TextRun({ text: `Nomor LHPP : ${docNumber || ""}`, size: 16 })] }),
+                new Paragraph({ children: [new TextRun({ text: `Revisi : ${headerRevision || "0"}`, size: 16 })] }),
+                new Paragraph({ children: [new TextRun({ text: `Tgl. Terbit : ${headerIssuedDate || ""}`, size: 16 })] }),
+                new Paragraph({ children: [new TextRun({ text: `Tgl. Revisi : ${headerRevisionDate || "0"}`, size: 16 })] }),
+              ],
+              borders: standardBorders,
+            }),
+          ],
+        }),
+      ],
+    });
+    children.push(headerTable, new Paragraph({ text: "" }));
 
-    // Add spacing
-    children.push(new Paragraph({ text: "" }));
-
-    // Process layout sections
+    // 2. Body Sections
     if (layout.sections && layout.sections.length > 0) {
       for (const section of layout.sections) {
         if (section.type === 'table') {
-          // Create table for table sections
           const tableRows = [
             new TableRow({
               children: [
                 new TableCell({
-                  children: [new Paragraph({ text: "HASIL EVALUASI" })],
-                  borders: {
-                    top: { style: BorderStyle.SINGLE, size: 1 },
-                    left: { style: BorderStyle.SINGLE, size: 1 },
-                    bottom: { style: BorderStyle.SINGLE, size: 1 },
-                    right: { style: BorderStyle.SINGLE, size: 1 },
-                  },
+                  children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: section.config?.col1Label || "Hasil evaluasi", bold: true, size: 18 })] })],
+                  borders: standardBorders,
+                  shading: { fill: "F2F2F2" },
                 }),
                 new TableCell({
-                  children: [new Paragraph({ text: "SPESIFIKASI TEKNIK" })],
-                  borders: {
-                    top: { style: BorderStyle.SINGLE, size: 1 },
-                    left: { style: BorderStyle.SINGLE, size: 1 },
-                    bottom: { style: BorderStyle.SINGLE, size: 1 },
-                    right: { style: BorderStyle.SINGLE, size: 1 },
-                  },
+                  children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: section.config?.col2Label || "Pengukuran tahanan pembumian", bold: true, size: 18 })] })],
+                  borders: standardBorders,
+                  shading: { fill: "F2F2F2" },
                 }),
                 new TableCell({
-                  children: [new Paragraph({ text: "KETERANGAN" })],
-                  borders: {
-                    top: { style: BorderStyle.SINGLE, size: 1 },
-                    left: { style: BorderStyle.SINGLE, size: 1 },
-                    bottom: { style: BorderStyle.SINGLE, size: 1 },
-                    right: { style: BorderStyle.SINGLE, size: 1 },
-                  },
+                  children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: section.config?.col3Label || "Keterangan", bold: true, size: 18 })] })],
+                  borders: standardBorders,
+                  shading: { fill: "F2F2F2" },
                 }),
               ],
             })
           ];
 
-          // Add data rows
           if (section.rows && Array.isArray(section.rows)) {
             for (const row of section.rows) {
               tableRows.push(
                 new TableRow({
-                  children: [
-                    new TableCell({
-                      children: [new Paragraph({ text: row.cells[0] || "" })],
-                      borders: {
-                        top: { style: BorderStyle.SINGLE, size: 1 },
-                        left: { style: BorderStyle.SINGLE, size: 1 },
-                        bottom: { style: BorderStyle.SINGLE, size: 1 },
-                        right: { style: BorderStyle.SINGLE, size: 1 },
-                      },
-                    }),
-                    new TableCell({
-                      children: [new Paragraph({ text: row.cells[1] || "" })],
-                      borders: {
-                        top: { style: BorderStyle.SINGLE, size: 1 },
-                        left: { style: BorderStyle.SINGLE, size: 1 },
-                        bottom: { style: BorderStyle.SINGLE, size: 1 },
-                        right: { style: BorderStyle.SINGLE, size: 1 },
-                      },
-                    }),
-                    new TableCell({
-                      children: [new Paragraph({ text: row.cells[2] || "" })],
-                      borders: {
-                        top: { style: BorderStyle.SINGLE, size: 1 },
-                        left: { style: BorderStyle.SINGLE, size: 1 },
-                        bottom: { style: BorderStyle.SINGLE, size: 1 },
-                        right: { style: BorderStyle.SINGLE, size: 1 },
-                      },
-                    }),
-                  ],
+                  children: row.cells.map((cell: string) => new TableCell({
+                    children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: cell || "", size: 18 })] })],
+                    borders: standardBorders,
+                  })),
                 })
               );
             }
           }
 
-          children.push(
-            new Table({
-              rows: tableRows,
-              width: {
-                size: 100,
-                type: "pct",
-              },
-            })
-          );
+          children.push(new Table({ rows: tableRows, width: { size: 100, type: WidthType.PERCENTAGE } }), new Paragraph({ text: "" }));
         } else if (section.type === 'grid') {
-          // Create grid layout for image grids
-          const gridCells = section.cells.map((cell: any) => {
-            if (cell.type === 'image' && cell.imageUrl) {
-              return new TableCell({
-                children: [
-                  new Paragraph({
-                    children: [
-                      new TextRun({
-                        text: `[Image: ${cell.caption || 'No caption'}]`,
-                        italics: true,
-                      }),
-                    ],
-                  }),
-                  new Paragraph({
-                    children: [
-                      new TextRun({
-                        text: cell.caption || "",
-                        size: 20,
-                      }),
-                    ],
-                  }),
-                ],
-                borders: {
-                  top: { style: BorderStyle.SINGLE, size: 1 },
-                  left: { style: BorderStyle.SINGLE, size: 1 },
-                  bottom: { style: BorderStyle.SINGLE, size: 1 },
-                  right: { style: BorderStyle.SINGLE, size: 1 },
-                },
-              });
-            } else {
-              return new TableCell({
-                children: [new Paragraph({ text: "" })],
-                borders: {
-                  top: { style: BorderStyle.SINGLE, size: 1 },
-                  left: { style: BorderStyle.SINGLE, size: 1 },
-                  bottom: { style: BorderStyle.SINGLE, size: 1 },
-                  right: { style: BorderStyle.SINGLE, size: 1 },
-                },
-              });
-            }
-          });
-
-          children.push(
-            new Table({
-              rows: [
-                new TableRow({
-                  children: gridCells,
+          // Process image grid as a table for layout stability
+          const rows: TableRow[] = [];
+          for (let i = 0; i < section.cells.length; i += 3) {
+            const rowCells = section.cells.slice(i, i + 3).map((cell: any) => new TableCell({
+              width: { size: 33.33, type: WidthType.PERCENTAGE },
+              children: [
+                new Paragraph({
+                  alignment: AlignmentType.CENTER,
+                  children: [new TextRun({ text: `[Image: ${cell.caption || 'Photo'}]`, italics: true, color: "888888" })]
                 }),
+                new Paragraph({
+                  alignment: AlignmentType.CENTER,
+                  children: [new TextRun({ text: cell.caption || "", size: 16, bold: true })]
+                })
               ],
-              width: {
-                size: 100,
-                type: "pct",
-              },
-            })
-          );
+              borders: standardBorders,
+            }));
+            rows.push(new TableRow({ children: rowCells }));
+          }
+          children.push(new Table({ rows, width: { size: 100, type: WidthType.PERCENTAGE } }), new Paragraph({ text: "" }));
         }
-        
-        // Add spacing between sections
-        children.push(new Paragraph({ text: "" }));
       }
     }
 
-    // Footer section with signatures
-    children.push(
-      new Paragraph({ text: "" }),
-      new Paragraph({
-        children: [
-          new TextRun({
-            text: "TENAGA TEKNIK",
-            bold: true,
-            size: 24,
-          }),
-        ],
-      }),
-      new Paragraph({
-        children: [
-          new TextRun({
-            text: technicianName || "_",
-            size: 22,
-          }),
-        ],
-      }),
-      new Paragraph({ text: "" }),
-      new Paragraph({
-        children: [
-          new TextRun({
-            text: "SAKSI PEMILIK INSTALASI",
-            bold: true,
-            size: 24,
-          }),
-        ],
-      }),
-      new Paragraph({
-        children: [
-          new TextRun({
-            text: ownerName || "_",
-            size: 22,
-          }),
-        ],
-      })
-    );
+    // 3. Footer Table (Signatures)
+    const footerTable = new Table({
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      rows: [
+        new TableRow({
+          children: [
+            new TableCell({
+              children: [
+                new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "Tenaga Teknik", bold: true })] }),
+                new Paragraph({ text: "", spacing: { before: 400, after: 400 } }),
+                new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: technicianName || "" })] }),
+              ],
+              borders: standardBorders,
+            }),
+            new TableCell({
+              children: [
+                new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "Saksi Pemilik Instalasi", bold: true })] }),
+                new Paragraph({ text: "", spacing: { before: 400, after: 400 } }),
+                new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: ownerName || "" })] }),
+              ],
+              borders: standardBorders,
+            }),
+          ],
+        }),
+      ],
+    });
+    children.push(footerTable);
 
     const doc = new Document({
       sections: [{
+        properties: { page: { size: { width: 11906, height: 16838 } } }, // A4
         children,
       }],
     });

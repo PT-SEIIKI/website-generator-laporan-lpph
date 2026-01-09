@@ -15,3 +15,4 @@
 [x] 9. Final verification - application running on port 5000, API responding correctly
 [x] 10. Fixed cross-env dependency - installed cross-env package
 [x] 11. Import completed successfully
+[x] 12. Improved Word document generation layout to match the website (3-column header, better table styling, signature blocks, A4 sizing)
