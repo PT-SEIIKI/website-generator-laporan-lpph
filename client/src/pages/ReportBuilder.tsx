@@ -143,6 +143,7 @@ export default function ReportBuilder() {
                     new ImageRun({
                       data: logoBuffer,
                       transformation: { width: 60, height: 60 },
+                      type: "png",
                     }),
                   ],
                 }) : new Paragraph({
@@ -245,7 +246,8 @@ export default function ReportBuilder() {
             const rowChildren = [];
             
             for (const cell of cellsBatch) {
-              const imgBuffer = cell.url ? await fetchImageBuffer(cell.url) : null;
+              const imgUrl = (cell as any).url || (cell as any).imageUrl;
+              const imgBuffer = imgUrl ? await fetchImageBuffer(imgUrl) : null;
               rowChildren.push(new TableCell({
                 width: { size: 33.33, type: WidthType.PERCENTAGE },
                 children: [
@@ -255,6 +257,7 @@ export default function ReportBuilder() {
                       new ImageRun({
                         data: imgBuffer,
                         transformation: { width: 150, height: 150 },
+                        type: "png",
                       }),
                     ],
                   }) : new Paragraph({
@@ -304,6 +307,7 @@ export default function ReportBuilder() {
                     new ImageRun({
                       data: techSigBuffer,
                       transformation: { width: 100, height: 60 },
+                      type: "png",
                     }),
                   ],
                 }) : new Paragraph({ text: "", spacing: { before: 400, after: 400 } }),
@@ -320,6 +324,7 @@ export default function ReportBuilder() {
                     new ImageRun({
                       data: ownerSigBuffer,
                       transformation: { width: 100, height: 60 },
+                      type: "png",
                     }),
                   ],
                 }) : new Paragraph({ text: "", spacing: { before: 400, after: 400 } }),

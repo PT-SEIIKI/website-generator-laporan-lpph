@@ -20,5 +20,5 @@
 [x] 14. Enabled editing of table header labels (Hasil evaluasi, Spesifikasi Teknik, Keterangan)
 [x] 15. Fixed LSP errors in ReportBuilder.tsx and ReportGrid.tsx
 [x] 16. Fixed issue where editing one table header affected all tables by correcting state update logic
-[x] 17. Fixed image inclusion in Word export (logo, grid images, and signatures) by converting URLs to base64 buffers
-[x] 17. Re-installed cross-env package and verified application running on port 5000
+[x] 17. Fixed image inclusion in Word export (logo, grid images, and signatures) by converting URLs to base64 buffers and explicitly setting image type
+[x] 18. Fixed property name issue for grid images in Word export (supporting both 'url' and 'imageUrl')
