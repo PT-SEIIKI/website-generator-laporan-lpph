@@ -350,8 +350,8 @@ export default function ReportBuilder() {
       sections: [{ 
         properties: { 
           page: { 
-            size: { width: 11906, height: 16838 },
-            margin: { top: 720, bottom: 720, left: 720, right: 720 }
+            size: { width: 11906, height: 16838 }, // A4 width: 21cm, height: 29.7cm in twentieths of a point
+            margin: { top: 567, bottom: 567, left: 567, right: 567 } // 10mm margins = 567 twentieths of a point
           } 
         }, 
         children 

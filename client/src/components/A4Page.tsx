@@ -13,10 +13,11 @@ export function A4Page({ children, className = "", id }: A4PageProps) {
         id={id}
         className={`
           a4-page bg-white shadow-xl 
-          w-[210mm] min-h-[297mm] h-auto
+          w-[210mm] h-[297mm]
           mx-auto relative
           text-slate-900
           p-[10mm] flex flex-col
+          overflow-hidden
           ${className}
         `}
       >
