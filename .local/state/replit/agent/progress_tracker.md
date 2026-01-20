@@ -49,4 +49,5 @@
     - Cleaned up component logic for final delivery
 [x] 34. Import resumed - reinstalled cross-env and tsx packages, application running successfully on port 5000
 [x] 35. Removed table header labels as requested (no labels/header in data tables)
-[x] 35. Final import completion - reinstalled cross-env, configured workflow with webview on port 5000, application running successfully
+[x] 36. Fixed Word export to also remove table headers for consistency with UI
+[x] 37. Final import completion - reinstalled cross-env, configured workflow with webview on port 5000, application running successfully

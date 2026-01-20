@@ -256,6 +256,8 @@ export default function ReportBuilder() {
       for (const section of page.layout.sections) {
         if (section.type === 'table') {
           const tableRows: any[] = [];
+          // Commenting out the table header labels for Word export
+          /*
           if (section.colLabels) {
             tableRows.push(new TableRow({
               children: section.colLabels.map((label: string) => new TableCell({
@@ -265,6 +267,7 @@ export default function ReportBuilder() {
               })),
             }));
           }
+          */
           
           for (const row of section.rows) {
             tableRows.push(new TableRow({
