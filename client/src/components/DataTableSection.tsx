@@ -98,7 +98,8 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
       <div className="overflow-x-auto">
         <div className="relative">
           <table className="w-full text-[10px] border-collapse">
-            <thead>
+            {/* Remove thead if we want no header/labels */}
+            {/* <thead>
               <tr>
                 {(section.colLabels || Array(section.numCols).fill("")).map((label, idx) => (
                   <th key={idx} className="border border-slate-900 p-1 bg-slate-50 min-w-[50px]">
@@ -119,7 +120,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                   </th>
                 ))}
               </tr>
-            </thead>
+            </thead> */}
             <tbody>
               {section.rows.map((row, rowIndex) => (
                 <tr key={row.id} className="group relative">
