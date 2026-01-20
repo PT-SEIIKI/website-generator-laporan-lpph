@@ -101,7 +101,6 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
       <div className="overflow-x-auto space-y-6">
         {/* UPPER TABLE: EVALUATION */}
         <div className="relative">
-          <div className="absolute -top-4 left-0 text-[9px] font-bold text-slate-400 uppercase no-print">Tabel Atas (Evaluasi)</div>
           <table className="w-full text-[10px] border-collapse border border-slate-900">
             <thead>
               <tr className="bg-white">
@@ -149,7 +148,6 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
 
         {/* LOWER TABLE: DATA */}
         <div className="relative">
-          <div className="absolute -top-4 left-0 text-[9px] font-bold text-slate-400 uppercase no-print">Tabel Bawah (Data)</div>
           <table className="w-full text-[10px] border-collapse border border-slate-900">
             <thead>
               <tr className="bg-white">

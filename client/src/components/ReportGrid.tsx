@@ -92,12 +92,13 @@ export function ReportGrid({ layout, onChange, readOnly = false }: ReportGridPro
       {getSections().map((section) => (
         <div key={section.id} className="relative group/section border-x border-b border-slate-900 first:border-t-0 bg-white p-2">
           {!readOnly && (
-            <div className="absolute -left-12 top-0 flex flex-col gap-2 opacity-0 group-hover/section:opacity-100 transition-opacity no-print">
+            <div className="absolute -right-12 top-0 flex flex-col gap-2 opacity-0 group-hover/section:opacity-100 transition-opacity no-print">
               <Button
                 variant="destructive"
                 size="icon"
-                className="h-8 w-8"
+                className="h-8 w-8 shadow-md hover:scale-105 transition-transform"
                 onClick={() => removeSection(section.id)}
+                title="Hapus Tabel/Grid"
               >
                 <Trash2 className="w-4 h-4" />
               </Button>
