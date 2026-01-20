@@ -250,13 +250,20 @@ export default function ReportBuilder() {
       });
       children.push(headerTable, new Paragraph({ text: "" }));
 
-      // Sections
-      for (const section of page.layout.sections) {
-        if (section.type === 'table') {
-          const tableRows: any[] = [];
-          
-          // Data Rows
-          for (const row of section.rows) {
+          // Header
+          for (const section of page.layout.sections) {
+            if (section.type === 'table' && section.colLabels) {
+              tableRows.push(new TableRow({
+                children: section.colLabels.map((label: string) => new TableCell({
+                  children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: label.toUpperCase(), bold: true, size: 18 })] })],
+                  borders: standardBorders,
+                  shading: { fill: "F8FAFC" }
+                })),
+              }));
+            }
+            
+            // Data Rows
+            for (const row of section.rows) {
             tableRows.push(new TableRow({
               children: row.cells.map((cell: any) => new TableCell({
                 children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: String(cell || ""), size: 18 })] })],
@@ -273,7 +280,7 @@ export default function ReportBuilder() {
             const cellsBatch = section.cells.slice(k, k + numCols);
             const rowChildren = [];
             for (const cell of cellsBatch) {
-              const imgUrl = (cell as any).imageUrl;
+              const imgUrl = (cell as any).imageUrl || (cell as any).url; // Support both property names
               const imgBuffer = imgUrl ? await fetchImageBuffer(imgUrl) : null;
               rowChildren.push(new TableCell({
                 width: { size: 100 / numCols, type: WidthType.PERCENTAGE },

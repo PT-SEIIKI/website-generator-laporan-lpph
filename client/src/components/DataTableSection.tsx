@@ -93,9 +93,6 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
     });
   };
 
-  const numEvalCols = Math.max(1, parseInt(evalColInput) || 1);
-  const numEvalRows = Math.max(1, parseInt(evalRowInput) || 1);
-
   return (
     <div className="space-y-4">
       <div className="overflow-x-auto">
@@ -152,6 +149,15 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                   )}
                 </tr>
               ))}
+              {!readOnly && (
+                <tr className="no-print">
+                  <td colSpan={section.numCols} className="border border-slate-900 p-1 text-center bg-slate-50/50">
+                    <Button variant="ghost" size="sm" onClick={addDataRow} className="h-6 text-[10px] w-full text-slate-500 hover:text-primary transition-colors">
+                      <Plus className="w-3 h-3 mr-1" /> TAMBAH BARIS
+                    </Button>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
