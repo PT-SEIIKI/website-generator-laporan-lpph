@@ -11,6 +11,7 @@ import { type ReportLayout, type MultiPageLayout } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, ChevronLeft, ChevronRight, Plus as PlusIcon, Trash2 as TrashIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export default function ReportBuilder() {
   const [, params] = useRoute("/report/:id");
@@ -214,6 +215,13 @@ export default function ReportBuilder() {
                 new TableCell({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: (section as any).colLabels?.[1] || "Spesifikasi Teknik", bold: true, size: 18 })] })], borders: standardBorders, shading: { fill: "F2F2F2" } }),
                 new TableCell({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: (section as any).colLabels?.[2] || "Keterangan", bold: true, size: 18 })] })], borders: standardBorders, shading: { fill: "F2F2F2" } }),
               ],
+            }),
+            new TableRow({
+              children: [
+                new TableCell({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: (section as any).dataColLabels?.[0] || "Label...", bold: true, size: 18 })] })], borders: standardBorders, shading: { fill: "F2F2F2" } }),
+                new TableCell({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: (section as any).dataColLabels?.[1] || "Label...", bold: true, size: 18 })] })], borders: standardBorders, shading: { fill: "F2F2F2" } }),
+                new TableCell({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: (section as any).dataColLabels?.[2] || "Label...", bold: true, size: 18 })] })], borders: standardBorders, shading: { fill: "F2F2F2" } }),
+              ],
             })
           ];
 
@@ -327,21 +335,34 @@ export default function ReportBuilder() {
 
       <main className="flex-1 relative overflow-y-auto py-8">
         <div id="report-pages-container" className="flex flex-col gap-8">
-          {/* Only render current page for builder, but render all for print-like container if needed */}
-          <A4Page id={`page-${layout.pages[currentPageIndex]?.id}`} className="print:m-0 print:shadow-none print:p-0">
-            <div className="flex flex-col h-full">
-              <ReportHeader logoUrl={logoUrl} setLogoUrl={setLogoUrl} title={headerTitle} setTitle={setHeaderTitle} docNumber={docNumber} setDocNumber={setDocNumber} revision={headerRevision} setRevision={setHeaderRevision} issuedDate={headerIssuedDate} setIssuedDate={setHeaderIssuedDate} revisionDate={headerRevisionDate} setRevisionDate={setHeaderRevisionDate} />
-              
-              <div className="flex-1 overflow-hidden py-2">
-                <ReportGrid 
-                  layout={layout.pages[currentPageIndex]?.layout || { sections: [] }} 
-                  onChange={(newLayout) => updatePageLayout(currentPageIndex, newLayout)} 
-                />
-              </div>
-              
-              <ReportFooter year={year} setYear={setYear} technicianName={technicianName} setTechnicianName={setTechnicianName} technicianSignatureUrl={technicianSignatureUrl} setTechnicianSignatureUrl={setTechnicianSignatureUrl} ownerName={ownerName} setOwnerName={setOwnerName} ownerSignatureUrl={ownerSignatureUrl} setOwnerSignatureUrl={setOwnerSignatureUrl} />
+          {/* Render all pages for PDF export visibility, but keep them accessible */}
+          {layout.pages.map((page, index) => (
+            <div key={page.id} className={cn(
+              "transition-all",
+              index === currentPageIndex ? "block" : "hidden no-print"
+            )}>
+              <A4Page id={`page-${page.id}`} className="print:m-0 print:shadow-none print:p-0">
+                <div className="flex flex-col h-full">
+                  <ReportHeader logoUrl={logoUrl} setLogoUrl={setLogoUrl} title={headerTitle} setTitle={setHeaderTitle} docNumber={docNumber} setDocNumber={setDocNumber} revision={headerRevision} setRevision={setHeaderRevision} issuedDate={headerIssuedDate} setIssuedDate={setHeaderIssuedDate} revisionDate={headerRevisionDate} setRevisionDate={setHeaderRevisionDate} />
+                  
+                  <div className="flex-1 overflow-hidden py-2">
+                    <IdentityTable 
+                      ownerName={ownerName} 
+                      setOwnerName={setOwnerName} 
+                      operationYear={year} 
+                      setOperationYear={setYear}
+                    />
+                    <ReportGrid 
+                      layout={page.layout || { sections: [] }} 
+                      onChange={(newLayout) => updatePageLayout(index, newLayout)} 
+                    />
+                  </div>
+                  
+                  <ReportFooter year={year} setYear={setYear} technicianName={technicianName} setTechnicianName={setTechnicianName} technicianSignatureUrl={technicianSignatureUrl} setTechnicianSignatureUrl={setTechnicianSignatureUrl} ownerName={ownerName} setOwnerName={setOwnerName} ownerSignatureUrl={ownerSignatureUrl} setOwnerSignatureUrl={setOwnerSignatureUrl} />
+                </div>
+              </A4Page>
             </div>
-          </A4Page>
+          ))}
         </div>
       </main>
     </div>
