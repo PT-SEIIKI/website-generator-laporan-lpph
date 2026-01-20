@@ -52,4 +52,3 @@
 [x] 36. Fixed Word export to also remove table headers for consistency with UI
 [x] 37. Final import completion - reinstalled cross-env, configured workflow with webview on port 5000, application running successfully
 [x] 38. Fixed layout issue where signatures covered grid images by allowing pages to grow in height and adjusting footer positioning
-[x] 39. Standardized A4 layout (21cm x 29.7cm) across UI preview and Word export with consistent 10mm margins
