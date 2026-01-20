@@ -155,7 +155,7 @@ export function DataTableSectionControls({
         <Button
           variant="destructive"
           size="icon"
-          className="absolute -right-12 top-0 h-8 w-8 shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+          className="absolute -right-12 top-0 h-8 w-8 shadow-md transition-opacity"
           onClick={onRemove}
           title="Hapus Bagian Ini"
         >
