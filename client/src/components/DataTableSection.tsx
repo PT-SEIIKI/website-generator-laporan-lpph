@@ -12,6 +12,24 @@ interface DataTableSectionProps {
 }
 
 export function DataTableSection({ section, onChange, readOnly = false }: DataTableSectionProps) {
+  const updateColumns = (newCount: number) => {
+    const count = Math.max(1, Math.min(10, newCount));
+    const newLabels = [...(section.colLabels || [])];
+    const newWidths = Array(count).fill(`${100 / count}%`);
+    
+    onChange({
+      numCols: count,
+      colLabels: newLabels.slice(0, count),
+      colWidths: newWidths,
+      rows: section.rows.map(row => ({
+        ...row,
+        cells: row.cells.length > count 
+          ? row.cells.slice(0, count) 
+          : [...row.cells, ...Array(count - row.cells.length).fill("")]
+      }))
+    });
+  };
+
   const addRow = () => {
     const newRow: TableRow = {
       id: crypto.randomUUID(),
@@ -21,6 +39,21 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
       ...section,
       rows: [...section.rows, newRow],
     });
+  };
+
+  const updateRowsCount = (newCount: number) => {
+    const count = Math.max(0, newCount);
+    const currentRows = [...section.rows];
+    
+    if (count > currentRows.length) {
+      const extraRows = Array.from({ length: count - currentRows.length }).map(() => ({
+        id: crypto.randomUUID(),
+        cells: Array(section.numCols).fill(""),
+      }));
+      onChange({ rows: [...currentRows, ...extraRows] });
+    } else {
+      onChange({ rows: currentRows.slice(0, count) });
+    }
   };
 
   const removeRow = (rowId: string) => {
@@ -44,13 +77,38 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
   };
 
   return (
-    <div className="space-y-0">
+    <div className="space-y-2">
+      {!readOnly && (
+        <div className="flex items-center gap-4 p-2 bg-slate-50 rounded-md no-print mb-2">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-medium text-slate-500">Jumlah Kolom:</span>
+            <Input 
+              type="number" 
+              value={section.numCols} 
+              onChange={(e) => updateColumns(parseInt(e.target.value) || 1)}
+              className="h-7 w-16 text-[10px]"
+              min="1"
+              max="10"
+            />
+          </div>
+          <div className="flex items-center gap-2 border-l pl-4">
+            <span className="text-[10px] font-medium text-slate-500">Jumlah Baris:</span>
+            <Input 
+              type="number" 
+              value={section.rows.length} 
+              onChange={(e) => updateRowsCount(parseInt(e.target.value) || 0)}
+              className="h-7 w-16 text-[10px]"
+              min="0"
+            />
+          </div>
+        </div>
+      )}
       <div className="overflow-x-auto">
         <table className="w-full text-[10px] border-collapse border border-slate-900">
           <thead>
             {/* Main Evaluation Row */}
             <tr className="bg-white">
-              <th className="border border-slate-900 p-1 font-bold text-center w-1/3 uppercase">
+              <th className="border border-slate-900 p-1 font-bold text-center uppercase" style={{ width: '33.33%' }}>
                 {readOnly ? (
                   section.colLabels?.[0] || "Hasil evaluasi"
                 ) : (
@@ -66,7 +124,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                   />
                 )}
               </th>
-              <th className="border border-slate-900 p-1 font-bold text-center w-1/3 uppercase">
+              <th className="border border-slate-900 p-1 font-bold text-center uppercase" style={{ width: '33.33%' }}>
                 {readOnly ? (
                   section.colLabels?.[1] || "Spesifikasi Teknik"
                 ) : (
@@ -82,7 +140,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                   />
                 )}
               </th>
-              <th className="border border-slate-900 p-1 font-bold text-center w-1/3 uppercase">
+              <th className="border border-slate-900 p-1 font-bold text-center uppercase" style={{ width: '33.33%' }}>
                 {readOnly ? (
                   section.colLabels?.[2] || "Keterangan"
                 ) : (
