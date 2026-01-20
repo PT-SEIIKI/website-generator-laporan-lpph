@@ -98,88 +98,16 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
 
   return (
     <div className="space-y-4">
-      <div className="overflow-x-auto space-y-6">
-        {/* UPPER TABLE: EVALUATION */}
+      <div className="overflow-x-auto">
         <div className="relative">
           <table className="w-full text-[10px] border-collapse border border-slate-900">
-            <thead>
-              <tr className="bg-white">
-                {Array.from({ length: numEvalCols }).map((_, i) => (
-                  <th key={i} className="border border-slate-900 p-1 font-bold text-center uppercase" style={{ width: `${100 / numEvalCols}%` }}>
-                    {readOnly ? section.colLabels?.[i] || "" : (
-                      <Input 
-                        value={section.colLabels?.[i] || ""} 
-                        onChange={e => {
-                          const currentLabels = section.colLabels || Array(numEvalCols).fill("");
-                          const newLabels = [...currentLabels];
-                          newLabels[i] = e.target.value;
-                          onChange({ colLabels: newLabels });
-                        }}
-                        placeholder="Label..."
-                        className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase font-bold"
-                      />
-                    )}
-                  </th>
-                ))}
-              </tr>
-              {Array.from({ length: numEvalRows - 1 }).map((_, rowIndex) => (
-                <tr key={rowIndex} className="bg-white">
-                  {Array.from({ length: numEvalCols }).map((_, i) => (
-                    <td key={i} className="border border-slate-900 p-1 text-center text-[10px]">
-                      {readOnly ? (i === 0 ? section.evaluationLabel : i === 1 ? section.title : section.description) || "..." : (
-                        <Input 
-                          value={(i === 0 ? section.evaluationLabel : i === 1 ? section.title : section.description) || ""} 
-                          onChange={e => {
-                            if (i === 0) onChange({ evaluationLabel: e.target.value });
-                            else if (i === 1) onChange({ title: e.target.value });
-                            else onChange({ description: e.target.value });
-                          }}
-                          placeholder="..."
-                          className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase"
-                        />
-                      )}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-          </table>
-        </div>
-
-        {/* LOWER TABLE: DATA */}
-        <div className="relative">
-          <table className="w-full text-[10px] border-collapse border border-slate-900">
-            <thead>
-              <tr className="bg-white">
-                {Array.from({ length: section.numCols }).map((_, i) => (
-                  <th key={i} className="border border-slate-900 p-1 font-bold text-center uppercase" style={{ width: section.colWidths?.[i] || `${100 / section.numCols}%` }}>
-                    {readOnly ? section.dataColLabels?.[i] || "" : (
-                      <Input 
-                        value={section.dataColLabels?.[i] || ""} 
-                        onChange={e => {
-                          const currentLabels = section.dataColLabels || Array(section.numCols).fill("");
-                          const newLabels = [...currentLabels];
-                          newLabels[i] = e.target.value;
-                          onChange({ dataColLabels: newLabels });
-                        }}
-                        placeholder="Label..."
-                        className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase font-bold"
-                      />
-                    )}
-                  </th>
-                ))}
-              </tr>
-            </thead>
             <tbody>
               {section.rows.map((row) => (
                 <tr key={row.id} className="group relative">
                   {row.cells.map((cell, colIndex) => (
                     <td
                       key={`${row.id}-${colIndex}`}
-                      className={cn(
-                        "border border-slate-900 p-1",
-                        colIndex === 0 ? "text-left font-bold bg-white pl-2" : "text-center"
-                      )}
+                      className="border border-slate-900 p-1 text-center"
                     >
                       {readOnly ? (
                         <div className="min-h-[1.2rem] text-slate-900 font-medium uppercase">{cell}</div>
@@ -188,10 +116,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                           value={cell}
                           onChange={(e) => updateDataCell(row.id, colIndex, e.target.value)}
                           placeholder="..."
-                          className={cn(
-                            "h-5 text-[10px] border-0 bg-transparent hover:bg-slate-50 focus:bg-white p-1 uppercase",
-                            colIndex === 0 ? "text-left font-bold" : "text-center"
-                          )}
+                          className="h-5 text-[10px] text-center border-0 bg-transparent hover:bg-slate-50 focus:bg-white p-1 uppercase"
                         />
                       )}
                     </td>

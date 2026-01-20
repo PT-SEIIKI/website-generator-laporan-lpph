@@ -204,7 +204,7 @@ export function ReportGrid({ layout, onChange, readOnly = false }: ReportGridPro
 export function ReportGridControls({ onAddTable, onAddGrid }: { onAddTable: (cols: number) => void, onAddGrid: (cols: 1 | 2 | 3) => void }) {
   return (
     <div className="flex items-center justify-center gap-4 py-8 no-print flex-wrap">
-      <Button variant="outline" onClick={() => onAddTable(3)} className="gap-2">
+      <Button variant="outline" onClick={() => onAddTable(1)} className="gap-2">
         <TableIcon className="w-4 h-4" />
         Add Table
       </Button>
