@@ -227,9 +227,6 @@ export default function ReportBuilder() {
                 children: [
                   new Paragraph({ alignment: AlignmentType.CENTER, children: [
                     new TextRun({ text: headerTitle || "EVALUASI HASIL UJI PERALATAN", bold: true, size: 24 }),
-                  ] }),
-                  new Paragraph({ alignment: AlignmentType.CENTER, children: [
-                    new TextRun({ text: "- PENGUKURAN TAHANAN PEMBUMIAN -", bold: true, size: 20 }),
                   ] })
                 ],
                 borders: standardBorders,

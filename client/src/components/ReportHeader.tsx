@@ -85,9 +85,6 @@ export function ReportHeader({
                 <div className="text-base font-bold leading-tight text-slate-900 uppercase whitespace-pre-wrap">
                   {title || "EVALUASI HASIL UJI PERALATAN"}
                 </div>
-                <div className="text-[10px] font-bold leading-tight text-slate-900 uppercase">
-                  - PENGUKURAN TAHANAN PEMBUMIAN -
-                </div>
               </div>
             ) : (
               <div className="space-y-1">
@@ -98,9 +95,6 @@ export function ReportHeader({
                   className="w-full text-center text-base font-bold leading-tight resize-none border-0 bg-transparent focus:ring-0 focus:outline-none uppercase p-0"
                   rows={2}
                 />
-                <div className="text-[10px] font-bold leading-tight text-slate-900 uppercase">
-                  - PENGUKURAN TAHANAN PEMBUMIAN -
-                </div>
               </div>
             )}
           </div>
