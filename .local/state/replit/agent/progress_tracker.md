@@ -23,3 +23,4 @@
 [x] 17. Fixed image inclusion in Word export (logo, grid images, and signatures) by converting URLs to base64 buffers and explicitly setting image type
 [x] 18. Fixed property name issue for grid images in Word export (supporting both 'url' and 'imageUrl')
 [x] 19. Reinstalled cross-env dependency and verified application running successfully
+[x] 20. Ran database migration (drizzle-kit push) to create tables and application is now running
