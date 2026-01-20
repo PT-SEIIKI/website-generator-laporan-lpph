@@ -121,7 +121,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
               </tr>
             </thead>
             <tbody>
-              {section.rows.map((row) => (
+              {section.rows.map((row, rowIndex) => (
                 <tr key={row.id} className="group relative">
                   {row.cells.map((cell, colIndex) => (
                     <td
@@ -133,6 +133,16 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                       ) : (
                         <Input
                           value={cell}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              const nextRow = section.rows[rowIndex + 1];
+                              if (nextRow) {
+                                // Simple focus management could be added here if refs were available
+                              } else {
+                                addDataRow();
+                              }
+                            }
+                          }}
                           onChange={(e) => updateDataCell(row.id, colIndex, e.target.value)}
                           placeholder="..."
                           className="h-5 text-[10px] text-center border-0 bg-transparent hover:bg-slate-50 focus:bg-white p-1 uppercase"
