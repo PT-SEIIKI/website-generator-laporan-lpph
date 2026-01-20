@@ -209,15 +209,6 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
           </table>
         </div>
       </div>
-
-      {!readOnly && (
-        <div className="flex justify-center mt-2 no-print">
-          <Button variant="outline" size="sm" onClick={addDataRow} className="gap-2 h-7 text-[10px] border-primary/30 text-primary hover:bg-primary/5">
-            <Plus className="w-3 h-3" />
-            Tambah Baris Data
-          </Button>
-        </div>
-      )}
     </div>
   );
 }
