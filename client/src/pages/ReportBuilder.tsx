@@ -182,7 +182,6 @@ export default function ReportBuilder() {
     
     const fetchImageBuffer = async (url: string) => {
       try {
-        // Handle relative URLs for local uploads
         const finalUrl = url.startsWith('/') ? `${window.location.origin}${url}` : url;
         const response = await fetch(finalUrl);
         const arrayBuffer = await response.arrayBuffer();
@@ -206,7 +205,6 @@ export default function ReportBuilder() {
       const page = layout.pages[i];
       if (i > 0) children.push(new Paragraph({ children: [new PageBreak()] }));
 
-      // Header
       const logoBuffer = logoUrl ? await fetchImageBuffer(logoUrl) : null;
       const headerTable = new Table({
         width: { size: 100, type: WidthType.PERCENTAGE },
@@ -250,20 +248,20 @@ export default function ReportBuilder() {
       });
       children.push(headerTable, new Paragraph({ text: "" }));
 
-          // Header
-          for (const section of page.layout.sections) {
-            if (section.type === 'table' && section.colLabels) {
-              tableRows.push(new TableRow({
-                children: section.colLabels.map((label: string) => new TableCell({
-                  children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: label.toUpperCase(), bold: true, size: 18 })] })],
-                  borders: standardBorders,
-                  shading: { fill: "F8FAFC" }
-                })),
-              }));
-            }
-            
-            // Data Rows
-            for (const row of section.rows) {
+      for (const section of page.layout.sections) {
+        if (section.type === 'table') {
+          const tableRows: any[] = [];
+          if (section.colLabels) {
+            tableRows.push(new TableRow({
+              children: section.colLabels.map((label: string) => new TableCell({
+                children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: label.toUpperCase(), bold: true, size: 18 })] })],
+                borders: standardBorders,
+                shading: { fill: "F8FAFC" }
+              })),
+            }));
+          }
+          
+          for (const row of section.rows) {
             tableRows.push(new TableRow({
               children: row.cells.map((cell: any) => new TableCell({
                 children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: String(cell || ""), size: 18 })] })],
@@ -280,7 +278,7 @@ export default function ReportBuilder() {
             const cellsBatch = section.cells.slice(k, k + numCols);
             const rowChildren = [];
             for (const cell of cellsBatch) {
-              const imgUrl = (cell as any).imageUrl || (cell as any).url; // Support both property names
+              const imgUrl = (cell as any).imageUrl || (cell as any).url;
               const imgBuffer = imgUrl ? await fetchImageBuffer(imgUrl) : null;
               rowChildren.push(new TableCell({
                 width: { size: 100 / numCols, type: WidthType.PERCENTAGE },
@@ -301,7 +299,6 @@ export default function ReportBuilder() {
                 borders: standardBorders,
               }));
             }
-            // Fill empty cells if last row is incomplete
             while (rowChildren.length < numCols) {
               rowChildren.push(new TableCell({ width: { size: 100 / numCols, type: WidthType.PERCENTAGE }, children: [new Paragraph({ text: "" })], borders: standardBorders }));
             }
@@ -311,7 +308,6 @@ export default function ReportBuilder() {
         }
       }
 
-      // Footer
       const techSigBuffer = technicianSignatureUrl ? await fetchImageBuffer(technicianSignatureUrl) : null;
       const ownerSigBuffer = ownerSignatureUrl ? await fetchImageBuffer(ownerSignatureUrl) : null;
       const footerTable = new Table({
@@ -377,7 +373,6 @@ export default function ReportBuilder() {
         setIsPreview={setIsPreview}
       />
       
-      {/* Page Navigation Controls */}
       <div className="sticky top-16 z-10 bg-white border-b px-4 py-2 flex items-center justify-between no-print">
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={() => setCurrentPageIndex(prev => Math.max(0, prev - 1))} disabled={currentPageIndex === 0}>
@@ -411,7 +406,6 @@ export default function ReportBuilder() {
                 onAddGrid={addGridSection}
               />
               
-              {/* Global controls for selected section */}
               {layout.pages[currentPageIndex].layout.sections?.map(section => (
                 <DataTableSectionControls
                   key={section.id}
@@ -500,7 +494,6 @@ export default function ReportBuilder() {
             </div>
           )}
 
-          {/* Render all pages for PDF export visibility, but keep them accessible */}
           {layout.pages.map((page, index) => (
             <div key={page.id} className={cn(
               "transition-all",
@@ -533,16 +526,16 @@ export default function ReportBuilder() {
                   </div>
                   
                   <ReportFooter 
-                    year={year} 
-                    setYear={setYear} 
-                    technicianName={technicianName} 
-                    setTechnicianName={setTechnicianName} 
-                    technicianSignatureUrl={technicianSignatureUrl} 
-                    setTechnicianSignatureUrl={setTechnicianSignatureUrl} 
-                    ownerName={ownerName} 
-                    setOwnerName={setOwnerName} 
-                    ownerSignatureUrl={ownerSignatureUrl} 
-                    setOwnerSignatureUrl={setOwnerSignatureUrl} 
+                    year={year}
+                    setYear={setYear}
+                    technicianName={technicianName}
+                    setTechnicianName={setTechnicianName}
+                    technicianSignatureUrl={technicianSignatureUrl}
+                    setTechnicianSignatureUrl={setTechnicianSignatureUrl}
+                    ownerName={ownerName}
+                    setOwnerName={setOwnerName}
+                    ownerSignatureUrl={ownerSignatureUrl}
+                    setOwnerSignatureUrl={setOwnerSignatureUrl}
                     readOnly={isPreview}
                   />
                 </div>
