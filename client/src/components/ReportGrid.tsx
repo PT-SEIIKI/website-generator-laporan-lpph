@@ -88,7 +88,7 @@ export function ReportGrid({ layout, onChange, readOnly = false }: ReportGridPro
   };
 
   return (
-    <div className="space-y-0 px-0 min-h-[400px]">
+    <div className="space-y-0 px-0 flex-grow min-h-0">
       {getSections().map((section) => (
         <div key={section.id} className="relative group/section border-slate-900 first:border-t-0 bg-white p-2">
           {!readOnly && (

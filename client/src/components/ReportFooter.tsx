@@ -60,7 +60,7 @@ export function ReportFooter({
   };
 
   return (
-    <div className="mt-auto page-break-avoid border border-t-0 border-slate-900">
+    <div className="mt-4 border border-slate-900">
       <div className="grid grid-cols-2 gap-0">
         {/* Left: Tenaga Teknik */}
         <div className="text-center border-r border-slate-900 p-2">
