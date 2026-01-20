@@ -100,7 +100,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
     <div className="space-y-4">
       <div className="overflow-x-auto">
         <div className="relative">
-          <table className="w-full text-[10px] border-collapse border border-slate-900">
+          <table className="w-full text-[10px] border-collapse">
             <tbody>
               {section.rows.map((row) => (
                 <tr key={row.id} className="group relative">

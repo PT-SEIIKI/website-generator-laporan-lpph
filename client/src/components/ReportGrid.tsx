@@ -90,7 +90,7 @@ export function ReportGrid({ layout, onChange, readOnly = false }: ReportGridPro
   return (
     <div className="space-y-0 px-0 min-h-[400px]">
       {getSections().map((section) => (
-        <div key={section.id} className="relative group/section border-x border-b border-slate-900 first:border-t-0 bg-white p-2">
+        <div key={section.id} className="relative group/section border-slate-900 first:border-t-0 bg-white p-2">
           {!readOnly && (
             <div className="absolute -right-12 top-0 flex flex-col gap-2 opacity-0 group-hover/section:opacity-100 transition-opacity no-print">
               <Button
@@ -106,11 +106,13 @@ export function ReportGrid({ layout, onChange, readOnly = false }: ReportGridPro
           )}
 
           {section.type === "table" ? (
-            <DataTableSection
-              section={section}
-              onChange={(updated) => updateSection(section.id, updated)}
-              readOnly={readOnly}
-            />
+            <div className="border border-slate-900">
+              <DataTableSection
+                section={section}
+                onChange={(updated) => updateSection(section.id, updated)}
+                readOnly={readOnly}
+              />
+            </div>
           ) : (
             /* Grid Layout */
             <div className="grid w-full gap-0 border border-slate-900" style={{ gridTemplateColumns: `repeat(${section.numCols}, 1fr)` }}>
