@@ -101,6 +101,28 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
       <div className="overflow-x-auto">
         <div className="relative">
           <table className="w-full text-[10px] border-collapse">
+            <thead>
+              <tr>
+                {(section.colLabels || Array(section.numCols).fill("")).map((label, idx) => (
+                  <th key={idx} className="border border-slate-900 p-1 bg-slate-50 min-w-[50px]">
+                    {readOnly ? (
+                      <div className="text-[10px] font-bold uppercase">{label}</div>
+                    ) : (
+                      <Input
+                        value={label}
+                        onChange={(e) => {
+                          const newLabels = [...(section.colLabels || Array(section.numCols).fill(""))];
+                          newLabels[idx] = e.target.value;
+                          onChange({ colLabels: newLabels });
+                        }}
+                        placeholder="Label..."
+                        className="h-5 text-[10px] text-center border-0 bg-transparent hover:bg-white focus:bg-white p-0 uppercase font-bold"
+                      />
+                    )}
+                  </th>
+                ))}
+              </tr>
+            </thead>
             <tbody>
               {section.rows.map((row) => (
                 <tr key={row.id} className="group relative">

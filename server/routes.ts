@@ -95,30 +95,5 @@ export async function registerRoutes(
     res.json({ url, filename: req.file.filename });
   });
 
-  // Seed data
-  const existingReports = await storage.getReports();
-  if (existingReports.length === 0) {
-    await storage.createReport({
-      title: "VISUAL TEST ITEM – UJI LAIK OPERASI",
-      documentNumber: "063/LHPP/MANTEM/SEIIKI/XII/2025",
-      officerName: "Petugas Uji",
-      operationYear: "2025",
-      layoutJson: {
-        rows: [
-          {
-            id: "row-1",
-            ratio: "50:50",
-            columns: [
-              { id: "c1", cells: [{ id: "cell-1", type: "image", caption: "Pemeriksaan Kunci" }] },
-              { id: "c2", cells: [{ id: "cell-2", type: "image", caption: "Rambu Tanda Bahaya" }] }
-            ]
-          }
-        ]
-      },
-      headerLogoUrl: null,
-      footerSignatureUrl: null
-    });
-  }
-
   return httpServer;
 }

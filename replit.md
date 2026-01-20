@@ -65,8 +65,9 @@ shared/           # Shared code between client and server
 
 ### Report Layout System
 Reports use a flexible JSON-based layout stored in the `layoutJson` column:
+- Supports multi-page reports
 - Supports grid sections with configurable columns (1, 2, or 3 columns)
-- Supports table sections with editable rows
+- Supports table sections with editable headers and rows
 - Each cell can be an image with caption or a spacer
 - Layout changes persist to database automatically
 

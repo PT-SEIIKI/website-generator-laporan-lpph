@@ -182,7 +182,9 @@ export default function ReportBuilder() {
     
     const fetchImageBuffer = async (url: string) => {
       try {
-        const response = await fetch(url);
+        // Handle relative URLs for local uploads
+        const finalUrl = url.startsWith('/') ? `${window.location.origin}${url}` : url;
+        const response = await fetch(finalUrl);
         const arrayBuffer = await response.arrayBuffer();
         return new Uint8Array(arrayBuffer);
       } catch (err) {
