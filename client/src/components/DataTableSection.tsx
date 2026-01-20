@@ -12,11 +12,13 @@ interface DataTableSectionProps {
 }
 
 export function DataTableSection({ section, onChange, readOnly = false }: DataTableSectionProps) {
-  const [headerRowInput, setHeaderRowInput] = useState<string>("2"); // Static for evaluation header
   const [dataColInput, setDataColInput] = useState<string>(section.numCols.toString());
   const [dataRowInput, setDataRowInput] = useState<string>(section.rows.length.toString());
 
-  // Sync inputs when section changes externally
+  // Local state for evaluation table dimensions
+  const [evalColInput, setEvalColInput] = useState<string>("3");
+  const [evalRowInput, setEvalRowInput] = useState<string>("2");
+
   useEffect(() => {
     setDataColInput(section.numCols.toString());
     setDataRowInput(section.rows.length.toString());
@@ -91,6 +93,9 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
     });
   };
 
+  const numEvalCols = Math.max(1, parseInt(evalColInput) || 1);
+  const numEvalRows = Math.max(1, parseInt(evalRowInput) || 1);
+
   return (
     <div className="space-y-4">
       {!readOnly && (
@@ -104,12 +109,25 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
             {/* Upper Table Controls (Evaluation) */}
             <div className="space-y-2 p-2 bg-white rounded border border-slate-100">
               <span className="text-[10px] font-bold text-primary uppercase">1. Tabel Evaluasi (Atas)</span>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] text-slate-500">Jumlah Kolom:</span>
-                <Input value="3" disabled className="h-7 w-12 text-[10px] bg-slate-50 opacity-50" />
-                <span className="text-[10px] text-slate-500 ml-2">Jumlah Baris:</span>
-                <Input value="2" disabled className="h-7 w-12 text-[10px] bg-slate-50 opacity-50" />
-                <span className="text-[9px] text-slate-400 italic">(Tetap)</span>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] text-slate-500">Kolom:</span>
+                  <Input 
+                    type="text" 
+                    value={evalColInput} 
+                    onChange={(e) => setEvalColInput(e.target.value)}
+                    className="h-7 w-12 text-[10px] border-primary/20 focus:border-primary"
+                  />
+                </div>
+                <div className="flex items-center gap-2 border-l pl-4">
+                  <span className="text-[10px] text-slate-500">Baris:</span>
+                  <Input 
+                    type="text" 
+                    value={evalRowInput} 
+                    onChange={(e) => setEvalRowInput(e.target.value)}
+                    className="h-7 w-12 text-[10px] border-primary/20 focus:border-primary"
+                  />
+                </div>
               </div>
             </div>
 
@@ -141,115 +159,59 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
         </div>
       )}
 
-      <div className="overflow-x-auto space-y-4">
+      <div className="overflow-x-auto space-y-6">
         {/* UPPER TABLE: EVALUATION */}
         <div className="relative">
           <div className="absolute -top-4 left-0 text-[9px] font-bold text-slate-400 uppercase no-print">Tabel Atas (Evaluasi)</div>
           <table className="w-full text-[10px] border-collapse border border-slate-900">
             <thead>
               <tr className="bg-white">
-                <th className="border border-slate-900 p-1 font-bold text-center uppercase" style={{ width: '33.33%' }}>
-                  {readOnly ? section.colLabels?.[0] || "Hasil evaluasi" : (
-                    <Input 
-                      value={section.colLabels?.[0] || ""} 
-                      onChange={e => {
-                        const newLabels = [...(section.colLabels || Array(section.numCols).fill(""))];
-                        newLabels[0] = e.target.value;
-                        onChange({ colLabels: newLabels });
-                      }}
-                      placeholder="Hasil evaluasi..."
-                      className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase font-bold"
-                    />
-                  )}
-                </th>
-                <th className="border border-slate-900 p-1 font-bold text-center uppercase" style={{ width: '33.33%' }}>
-                  {readOnly ? section.colLabels?.[1] || "Spesifikasi Teknik" : (
-                    <Input 
-                      value={section.colLabels?.[1] || ""} 
-                      onChange={e => {
-                        const newLabels = [...(section.colLabels || Array(section.numCols).fill(""))];
-                        newLabels[1] = e.target.value;
-                        onChange({ colLabels: newLabels });
-                      }}
-                      placeholder="Spesifikasi Teknik..."
-                      className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase font-bold"
-                    />
-                  )}
-                </th>
-                <th className="border border-slate-900 p-1 font-bold text-center uppercase" style={{ width: '33.33%' }}>
-                  {readOnly ? section.colLabels?.[2] || "Keterangan" : (
-                    <Input 
-                      value={section.colLabels?.[2] || ""} 
-                      onChange={e => {
-                        const newLabels = [...(section.colLabels || Array(section.numCols).fill(""))];
-                        newLabels[2] = e.target.value;
-                        onChange({ colLabels: newLabels });
-                      }}
-                      placeholder="Keterangan..."
-                      className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase font-bold"
-                    />
-                  )}
-                </th>
+                {Array.from({ length: numEvalCols }).map((_, i) => (
+                  <th key={i} className="border border-slate-900 p-1 font-bold text-center uppercase" style={{ width: `${100 / numEvalCols}%` }}>
+                    {readOnly ? section.colLabels?.[i] || "" : (
+                      <Input 
+                        value={section.colLabels?.[i] || ""} 
+                        onChange={e => {
+                          const newLabels = [...(section.colLabels || Array(Math.max(section.numCols, numEvalCols)).fill(""))];
+                          newLabels[i] = e.target.value;
+                          onChange({ colLabels: newLabels });
+                        }}
+                        placeholder="Label..."
+                        className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase font-bold"
+                      />
+                    )}
+                  </th>
+                ))}
               </tr>
-              <tr className="bg-white">
-                <td className="border border-slate-900 p-1 text-center text-[10px]">
-                  {readOnly ? section.evaluationLabel || "Ada dan Sesuai" : (
-                    <Input 
-                      value={section.evaluationLabel || ""} 
-                      onChange={e => onChange({ evaluationLabel: e.target.value })}
-                      placeholder="Hasil evaluasi..."
-                      className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase"
-                    />
-                  )}
-                </td>
-                <td className="border border-slate-900 p-1 text-center text-[10px] font-medium">
-                  {readOnly ? section.title || "Terpasang lengkap" : (
-                    <Input 
-                      value={section.title || ""} 
-                      onChange={e => onChange({ title: e.target.value })}
-                      placeholder="Spesifikasi Teknik..."
-                      className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase"
-                    />
-                  )}
-                </td>
-                <td className="border border-slate-900 p-1 text-center text-[10px]">
-                  {readOnly ? section.description || "Berfungsi dengan normal" : (
-                    <Input 
-                      value={section.description || ""} 
-                      onChange={e => onChange({ description: e.target.value })}
-                      placeholder="Keterangan..."
-                      className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase"
-                    />
-                  )}
-                </td>
-              </tr>
+              {Array.from({ length: numEvalRows - 1 }).map((_, rowIndex) => (
+                <tr key={rowIndex} className="bg-white">
+                  {Array.from({ length: numEvalCols }).map((_, i) => (
+                    <td key={i} className="border border-slate-900 p-1 text-center text-[10px]">
+                      {readOnly ? (i === 0 ? section.evaluationLabel : i === 1 ? section.title : section.description) || "..." : (
+                        <Input 
+                          value={(i === 0 ? section.evaluationLabel : i === 1 ? section.title : section.description) || ""} 
+                          onChange={e => {
+                            if (i === 0) onChange({ evaluationLabel: e.target.value });
+                            else if (i === 1) onChange({ title: e.target.value });
+                            else onChange({ description: e.target.value });
+                          }}
+                          placeholder="..."
+                          className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase"
+                        />
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
             </thead>
           </table>
         </div>
 
         {/* LOWER TABLE: DATA */}
-        <div className="mt-6 relative">
+        <div className="relative">
           <div className="absolute -top-4 left-0 text-[9px] font-bold text-slate-400 uppercase no-print">Tabel Bawah (Data)</div>
           <table className="w-full text-[10px] border-collapse border border-slate-900">
             <tbody>
-              <tr className="bg-white">
-                {Array.from({ length: section.numCols }).map((_, i) => (
-                  <td key={i} className="border border-slate-900 p-1 font-bold text-center uppercase" style={{ width: section.colWidths[i] }}>
-                    {readOnly ? section.colLabels?.[i] || "" : (
-                      <Input
-                        value={section.colLabels?.[i] || ""}
-                        onChange={(e) => {
-                          const newLabels = [...(section.colLabels || Array(section.numCols).fill(""))];
-                          newLabels[i] = e.target.value;
-                          onChange({ colLabels: newLabels });
-                        }}
-                        placeholder="Label..."
-                        className="h-5 text-[10px] text-center border-0 bg-transparent p-0 font-bold uppercase"
-                      />
-                    )}
-                  </td>
-                ))}
-              </tr>
               {section.rows.map((row) => (
                 <tr key={row.id} className="group relative">
                   {row.cells.map((cell, colIndex) => (
@@ -300,4 +262,3 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
     </div>
   );
 }
-
