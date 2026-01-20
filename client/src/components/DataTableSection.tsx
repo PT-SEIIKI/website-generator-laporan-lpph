@@ -18,6 +18,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
     const newWidths = Array(count).fill(`${100 / count}%`);
     
     onChange({
+      ...section,
       numCols: count,
       colLabels: newLabels.slice(0, count),
       colWidths: newWidths,
@@ -50,9 +51,9 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
         id: crypto.randomUUID(),
         cells: Array(section.numCols).fill(""),
       }));
-      onChange({ rows: [...currentRows, ...extraRows] });
+      onChange({ ...section, rows: [...currentRows, ...extraRows] });
     } else {
-      onChange({ rows: currentRows.slice(0, count) });
+      onChange({ ...section, rows: currentRows.slice(0, count) });
     }
   };
 
@@ -117,7 +118,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                     onChange={e => {
                       const newLabels = [...(section.colLabels || Array(section.numCols).fill(""))];
                       newLabels[0] = e.target.value;
-                      onChange({ colLabels: newLabels });
+                      onChange({ ...section, colLabels: newLabels });
                     }}
                     placeholder="Hasil evaluasi..."
                     className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase font-bold"
@@ -133,7 +134,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                     onChange={e => {
                       const newLabels = [...(section.colLabels || Array(section.numCols).fill(""))];
                       newLabels[1] = e.target.value;
-                      onChange({ colLabels: newLabels });
+                      onChange({ ...section, colLabels: newLabels });
                     }}
                     placeholder="Spesifikasi Teknik..."
                     className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase font-bold"
@@ -149,7 +150,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                     onChange={e => {
                       const newLabels = [...(section.colLabels || Array(section.numCols).fill(""))];
                       newLabels[2] = e.target.value;
-                      onChange({ colLabels: newLabels });
+                      onChange({ ...section, colLabels: newLabels });
                     }}
                     placeholder="Keterangan..."
                     className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase font-bold"
@@ -164,7 +165,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                 ) : (
                   <Input 
                     value={section.evaluationLabel || ""} 
-                    onChange={e => onChange({ evaluationLabel: e.target.value })}
+                    onChange={e => onChange({ ...section, evaluationLabel: e.target.value })}
                     placeholder="Hasil evaluasi..."
                     className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase"
                   />
@@ -176,7 +177,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                 ) : (
                   <Input 
                     value={section.title || ""} 
-                    onChange={e => onChange({ title: e.target.value })}
+                    onChange={e => onChange({ ...section, title: e.target.value })}
                     placeholder="Spesifikasi Teknik..."
                     className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase"
                   />
@@ -188,7 +189,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                 ) : (
                   <Input 
                     value={section.description || ""} 
-                    onChange={e => onChange({ description: e.target.value })}
+                    onChange={e => onChange({ ...section, description: e.target.value })}
                     placeholder="Keterangan..."
                     className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase"
                   />

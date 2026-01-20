@@ -203,7 +203,7 @@ export default function ReportBuilder() {
     if (layout.sections && layout.sections.length > 0) {
       for (const section of layout.sections) {
         if (section.type === 'table') {
-          const tableRows = [
+          const tableRows: any[] = [
             new TableRow({
               children: [
                 new TableCell({
@@ -228,8 +228,8 @@ export default function ReportBuilder() {
           if (section.rows && Array.isArray(section.rows)) {
             for (const row of section.rows) {
               const docxRow = new TableRow({
-                children: row.cells.map((cell: string) => new TableCell({
-                  children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: cell || "", size: 18 })] })],
+                children: row.cells.map((cell: any) => new TableCell({
+                  children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: String(cell || ""), size: 18 })] })],
                   borders: standardBorders,
                 })),
               });
@@ -240,7 +240,7 @@ export default function ReportBuilder() {
           children.push(new Table({ rows: tableRows, width: { size: 100, type: WidthType.PERCENTAGE } }), new Paragraph({ text: "" }));
         } else if (section.type === 'grid') {
           // Process image grid as a table for layout stability
-          const rows: TableRow[] = [];
+          const rows: any[] = [];
           for (let i = 0; i < section.cells.length; i += 3) {
             const cellsBatch = section.cells.slice(i, i + 3);
             const rowChildren = [];
