@@ -396,27 +396,48 @@ export default function ReportBuilder() {
                 onAddGrid={addGridSection}
               />
               
-              {/* Global controls for selected table section */}
+              {/* Global controls for selected section */}
               {layout.pages[currentPageIndex].layout.sections?.map(section => (
-                section.type === 'table' && (
-                  <DataTableSectionControls
-                    key={section.id}
-                    evalColInput="3" // Static for now, could be made stateful if needed
-                    setEvalColInput={() => {}} 
-                    evalRowInput="2"
-                    setEvalRowInput={() => {}}
-                    dataColInput={section.numCols.toString()}
-                    onDataColChange={(val) => {
-                      const newCount = parseInt(val);
-                      if (isNaN(newCount)) return;
-                      const count = Math.min(10, newCount);
-                      const newLabels = [...(section.dataColLabels || [])];
+                <DataTableSectionControls
+                  key={section.id}
+                  colInput={section.type === 'grid' ? section.numCols.toString() : section.numCols.toString()}
+                  onColChange={(val) => {
+                    const newCount = parseInt(val);
+                    if (isNaN(newCount)) {
+                      const sections = [...layout.pages[currentPageIndex].layout.sections];
+                      const idx = sections.findIndex(s => s.id === section.id);
+                      if (section.type === 'grid') {
+                        sections[idx] = { ...section, numCols: 0 as any };
+                      } else {
+                        sections[idx] = { ...section, numCols: 0 as any };
+                      }
+                      updatePageLayout(currentPageIndex, { sections });
+                      return;
+                    }
+                    const count = Math.min(10, newCount);
+                    
+                    const sections = [...layout.pages[currentPageIndex].layout.sections];
+                    const idx = sections.findIndex(s => s.id === section.id);
+                    
+                    if (section.type === 'grid') {
+                      const colWidths = Array(count).fill(`${100 / count}%`);
+                      const currentCells = section.cells || [];
+                      let newCells;
+                      if (count > currentCells.length) {
+                        newCells = [...currentCells, ...Array.from({ length: count - currentCells.length }).map(() => ({
+                          id: crypto.randomUUID(),
+                          type: "image" as const,
+                          caption: ""
+                        }))];
+                      } else {
+                        newCells = currentCells.slice(0, count);
+                      }
+                      sections[idx] = { ...section, numCols: count, colWidths, cells: newCells };
+                    } else {
                       const newWidths = Array(count).fill(`${100 / count}%`);
-                      
-                      const updatedSection = {
+                      sections[idx] = {
                         ...section,
                         numCols: count,
-                        dataColLabels: newLabels.slice(0, count),
                         colWidths: newWidths,
                         rows: section.rows.map(row => ({
                           ...row,
@@ -425,35 +446,37 @@ export default function ReportBuilder() {
                             : [...row.cells, ...Array(count - row.cells.length).fill("")]
                         }))
                       };
-                      
+                    }
+                    updatePageLayout(currentPageIndex, { sections });
+                  }}
+                  rowInput={section.type === 'grid' ? "1" : section.rows.length.toString()}
+                  onRowChange={(val) => {
+                    if (section.type === 'grid') return;
+                    const count = parseInt(val);
+                    if (isNaN(count)) {
                       const sections = [...layout.pages[currentPageIndex].layout.sections];
                       const idx = sections.findIndex(s => s.id === section.id);
-                      sections[idx] = updatedSection;
+                      sections[idx] = { ...section, rows: [] };
                       updatePageLayout(currentPageIndex, { sections });
-                    }}
-                    dataRowInput={section.rows.length.toString()}
-                    onDataRowChange={(val) => {
-                      const count = parseInt(val);
-                      if (isNaN(count)) return;
-                      const currentRows = [...section.rows];
-                      let newRows;
-                      if (count > currentRows.length) {
-                        const extraRows = Array.from({ length: count - currentRows.length }).map(() => ({
-                          id: crypto.randomUUID(),
-                          cells: Array(section.numCols).fill(""),
-                        }));
-                        newRows = [...currentRows, ...extraRows];
-                      } else {
-                        newRows = currentRows.slice(0, count);
-                      }
-                      
-                      const sections = [...layout.pages[currentPageIndex].layout.sections];
-                      const idx = sections.findIndex(s => s.id === section.id);
-                      sections[idx] = { ...section, rows: newRows };
-                      updatePageLayout(currentPageIndex, { sections });
-                    }}
-                  />
-                )
+                      return;
+                    }
+                    const currentRows = [...section.rows];
+                    let newRows;
+                    if (count > currentRows.length) {
+                      newRows = [...currentRows, ...Array.from({ length: count - currentRows.length }).map(() => ({
+                        id: crypto.randomUUID(),
+                        cells: Array(section.numCols).fill(""),
+                      }))];
+                    } else {
+                      newRows = currentRows.slice(0, count);
+                    }
+                    
+                    const sections = [...layout.pages[currentPageIndex].layout.sections];
+                    const idx = sections.findIndex(s => s.id === section.id);
+                    sections[idx] = { ...section, rows: newRows };
+                    updatePageLayout(currentPageIndex, { sections });
+                  }}
+                />
               ))}
             </div>
           )}
