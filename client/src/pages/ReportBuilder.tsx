@@ -333,7 +333,11 @@ export default function ReportBuilder() {
               <ReportHeader logoUrl={logoUrl} setLogoUrl={setLogoUrl} title={headerTitle} setTitle={setHeaderTitle} docNumber={docNumber} setDocNumber={setDocNumber} revision={headerRevision} setRevision={setHeaderRevision} issuedDate={headerIssuedDate} setIssuedDate={setHeaderIssuedDate} revisionDate={headerRevisionDate} setRevisionDate={setHeaderRevisionDate} />
               
               <div className="flex-1">
-                <ReportGrid layout={layout.pages[currentPageIndex]?.layout || { sections: [] }} onChange={(newLayout) => updatePageLayout(currentPageIndex, newLayout)} />
+                <IdentityTable />
+                <ReportGrid 
+                  layout={layout.pages[currentPageIndex]?.layout || { sections: [] }} 
+                  onChange={(newLayout) => updatePageLayout(currentPageIndex, newLayout)} 
+                />
               </div>
               
               <ReportFooter year={year} setYear={setYear} technicianName={technicianName} setTechnicianName={setTechnicianName} technicianSignatureUrl={technicianSignatureUrl} setTechnicianSignatureUrl={setTechnicianSignatureUrl} ownerName={ownerName} setOwnerName={setOwnerName} ownerSignatureUrl={ownerSignatureUrl} setOwnerSignatureUrl={setOwnerSignatureUrl} />

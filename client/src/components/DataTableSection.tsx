@@ -224,7 +224,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                   </td>
                 ))}
               </tr>
-              {section.rows.map((row, rowIndex) => (
+                  {section.rows.map((row, rowIndex) => (
                 <tr key={row.id} className="group relative">
                   {row.cells.map((cell, colIndex) => (
                     <td
@@ -250,11 +250,11 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                     </td>
                   ))}
                   {!readOnly && (
-                    <div className="absolute -right-8 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity no-print">
+                    <td className="absolute -right-8 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity no-print border-0 p-0">
                       <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive" onClick={() => removeRow(row.id)}>
                         <Trash2 className="w-3 h-3" />
                       </Button>
-                    </div>
+                    </td>
                   )}
                 </tr>
               ))}

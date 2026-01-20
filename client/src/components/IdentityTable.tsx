@@ -1,3 +1,5 @@
+import { Input } from "@/components/ui/input";
+
 export function IdentityTable() {
   const fields = [
     { label: "Persil", placeholder: "____________________________________" },
@@ -23,10 +25,13 @@ export function IdentityTable() {
             <tbody>
               {fields.map((field) => (
                 <tr key={field.label}>
-                  <td className="w-24 font-bold text-slate-900 py-0.5">{field.label}</td>
+                  <td className="w-24 font-bold text-slate-900 py-0.5 uppercase">{field.label}</td>
                   <td className="w-2 text-center text-slate-900">:</td>
                   <td className="text-slate-900 px-1 truncate">
-                    <span className="opacity-40">Input Value</span>
+                    <Input 
+                      className="h-4 text-[10px] border-0 p-0 focus-visible:ring-0 bg-transparent uppercase"
+                      placeholder={field.placeholder}
+                    />
                   </td>
                 </tr>
               ))}
@@ -38,10 +43,13 @@ export function IdentityTable() {
             <tbody>
               {rightFields.map((field) => (
                 <tr key={field.label}>
-                  <td className="w-28 font-bold text-slate-900 py-0.5">{field.label}</td>
+                  <td className="w-28 font-bold text-slate-900 py-0.5 uppercase">{field.label}</td>
                   <td className="w-2 text-center text-slate-900">:</td>
                   <td className="text-slate-900 px-1 truncate">
-                    <span className="opacity-40">Input Value</span>
+                    <Input 
+                      className="h-4 text-[10px] border-0 p-0 focus-visible:ring-0 bg-transparent uppercase"
+                      placeholder={field.placeholder}
+                    />
                   </td>
                 </tr>
               ))}
