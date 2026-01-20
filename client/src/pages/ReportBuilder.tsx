@@ -328,12 +328,11 @@ export default function ReportBuilder() {
       <main className="flex-1 relative overflow-y-auto py-8">
         <div id="report-pages-container" className="flex flex-col gap-8">
           {/* Only render current page for builder, but render all for print-like container if needed */}
-          <A4Page id={`page-${layout.pages[currentPageIndex]?.id}`} className="print:m-0 print:shadow-none">
-            <div className="flex flex-col min-h-[297mm]">
+          <A4Page id={`page-${layout.pages[currentPageIndex]?.id}`} className="print:m-0 print:shadow-none print:p-0">
+            <div className="flex flex-col h-full">
               <ReportHeader logoUrl={logoUrl} setLogoUrl={setLogoUrl} title={headerTitle} setTitle={setHeaderTitle} docNumber={docNumber} setDocNumber={setDocNumber} revision={headerRevision} setRevision={setHeaderRevision} issuedDate={headerIssuedDate} setIssuedDate={setHeaderIssuedDate} revisionDate={headerRevisionDate} setRevisionDate={setHeaderRevisionDate} />
               
-              <div className="flex-1">
-                <IdentityTable />
+              <div className="flex-1 overflow-hidden py-2">
                 <ReportGrid 
                   layout={layout.pages[currentPageIndex]?.layout || { sections: [] }} 
                   onChange={(newLayout) => updatePageLayout(currentPageIndex, newLayout)} 
