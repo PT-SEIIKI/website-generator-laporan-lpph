@@ -12,13 +12,19 @@ interface DataTableSectionProps {
 }
 
 export function DataTableSection({ section, onChange, readOnly = false }: DataTableSectionProps) {
-  const updateColumns = (newCount: number) => {
+  const [colInput, setColInput] = useState<string>(section.numCols.toString());
+  const [rowInput, setRowInput] = useState<string>(section.rows.length.toString());
+
+  const updateColumns = (value: string) => {
+    setColInput(value);
+    const newCount = parseInt(value);
+    if (isNaN(newCount)) return;
+    
     const count = Math.max(1, Math.min(10, newCount));
     const newLabels = [...(section.colLabels || [])];
     const newWidths = Array(count).fill(`${100 / count}%`);
     
     onChange({
-      ...section,
       numCols: count,
       colLabels: newLabels.slice(0, count),
       colWidths: newWidths,
@@ -31,18 +37,11 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
     });
   };
 
-  const addRow = () => {
-    const newRow: TableRow = {
-      id: crypto.randomUUID(),
-      cells: Array(section.numCols).fill(""),
-    };
-    onChange({
-      ...section,
-      rows: [...section.rows, newRow],
-    });
-  };
+  const updateRowsCount = (value: string) => {
+    setRowInput(value);
+    const newCount = parseInt(value);
+    if (isNaN(newCount)) return;
 
-  const updateRowsCount = (newCount: number) => {
     const count = Math.max(0, newCount);
     const currentRows = [...section.rows];
     
@@ -51,22 +50,33 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
         id: crypto.randomUUID(),
         cells: Array(section.numCols).fill(""),
       }));
-      onChange({ ...section, rows: [...currentRows, ...extraRows] });
+      onChange({ rows: [...currentRows, ...extraRows] });
     } else {
-      onChange({ ...section, rows: currentRows.slice(0, count) });
+      onChange({ rows: currentRows.slice(0, count) });
     }
   };
 
-  const removeRow = (rowId: string) => {
+  const addRow = () => {
+    const newRow: TableRow = {
+      id: crypto.randomUUID(),
+      cells: Array(section.numCols).fill(""),
+    };
     onChange({
-      ...section,
-      rows: section.rows.filter(r => r.id !== rowId),
+      rows: [...section.rows, newRow],
     });
+    setRowInput((section.rows.length + 1).toString());
+  };
+
+  const removeRow = (rowId: string) => {
+    const newRows = section.rows.filter(r => r.id !== rowId);
+    onChange({
+      rows: newRows,
+    });
+    setRowInput(newRows.length.toString());
   };
 
   const updateCell = (rowId: string, colIndex: number, value: string) => {
     onChange({
-      ...section,
       rows: section.rows.map(row => {
         if (row.id !== rowId) return row;
         return {
@@ -84,22 +94,19 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-medium text-slate-500">Jumlah Kolom:</span>
             <Input 
-              type="number" 
-              value={section.numCols} 
-              onChange={(e) => updateColumns(parseInt(e.target.value) || 1)}
+              type="text" 
+              value={colInput} 
+              onChange={(e) => updateColumns(e.target.value)}
               className="h-7 w-16 text-[10px]"
-              min="1"
-              max="10"
             />
           </div>
           <div className="flex items-center gap-2 border-l pl-4">
             <span className="text-[10px] font-medium text-slate-500">Jumlah Baris:</span>
             <Input 
-              type="number" 
-              value={section.rows.length} 
-              onChange={(e) => updateRowsCount(parseInt(e.target.value) || 0)}
+              type="text" 
+              value={rowInput} 
+              onChange={(e) => updateRowsCount(e.target.value)}
               className="h-7 w-16 text-[10px]"
-              min="0"
             />
           </div>
         </div>
@@ -118,7 +125,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                     onChange={e => {
                       const newLabels = [...(section.colLabels || Array(section.numCols).fill(""))];
                       newLabels[0] = e.target.value;
-                      onChange({ ...section, colLabels: newLabels });
+                      onChange({ colLabels: newLabels });
                     }}
                     placeholder="Hasil evaluasi..."
                     className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase font-bold"
@@ -134,7 +141,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                     onChange={e => {
                       const newLabels = [...(section.colLabels || Array(section.numCols).fill(""))];
                       newLabels[1] = e.target.value;
-                      onChange({ ...section, colLabels: newLabels });
+                      onChange({ colLabels: newLabels });
                     }}
                     placeholder="Spesifikasi Teknik..."
                     className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase font-bold"
@@ -150,7 +157,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                     onChange={e => {
                       const newLabels = [...(section.colLabels || Array(section.numCols).fill(""))];
                       newLabels[2] = e.target.value;
-                      onChange({ ...section, colLabels: newLabels });
+                      onChange({ colLabels: newLabels });
                     }}
                     placeholder="Keterangan..."
                     className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase font-bold"
@@ -165,7 +172,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                 ) : (
                   <Input 
                     value={section.evaluationLabel || ""} 
-                    onChange={e => onChange({ ...section, evaluationLabel: e.target.value })}
+                    onChange={e => onChange({ evaluationLabel: e.target.value })}
                     placeholder="Hasil evaluasi..."
                     className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase"
                   />
@@ -177,7 +184,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                 ) : (
                   <Input 
                     value={section.title || ""} 
-                    onChange={e => onChange({ ...section, title: e.target.value })}
+                    onChange={e => onChange({ title: e.target.value })}
                     placeholder="Spesifikasi Teknik..."
                     className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase"
                   />
@@ -189,7 +196,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                 ) : (
                   <Input 
                     value={section.description || ""} 
-                    onChange={e => onChange({ ...section, description: e.target.value })}
+                    onChange={e => onChange({ description: e.target.value })}
                     placeholder="Keterangan..."
                     className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase"
                   />
@@ -215,7 +222,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                         onChange={(e) => {
                           const newLabels = [...(section.colLabels || Array(section.numCols).fill(""))];
                           newLabels[i] = e.target.value;
-                          onChange({ ...section, colLabels: newLabels });
+                          onChange({ colLabels: newLabels });
                         }}
                         placeholder="Label..."
                         className="h-5 text-[10px] text-center border-0 bg-transparent p-0 font-bold uppercase"
