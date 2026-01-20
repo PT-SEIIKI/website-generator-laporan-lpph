@@ -94,6 +94,7 @@
     background: white;
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
+    margin: 0;
   }
   .no-print {
     display: none !important;
@@ -101,14 +102,14 @@
   .print-only {
     display: block !important;
   }
-  /* Force single page feel per container if needed, or allow natural flow */
   .a4-page {
     box-shadow: none !important;
     margin: 0 !important;
+    padding: 10mm !important;
     width: 210mm !important;
-    height: auto !important; /* Allow height to grow for printing if content overflows, or fix to 297mm */
-    min-height: 297mm;
-    overflow: visible !important;
+    height: 297mm !important;
+    overflow: hidden !important;
     border: none !important;
+    page-break-after: always;
   }
 }
