@@ -211,6 +211,26 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
         <div className="relative">
           <div className="absolute -top-4 left-0 text-[9px] font-bold text-slate-400 uppercase no-print">Tabel Bawah (Data)</div>
           <table className="w-full text-[10px] border-collapse border border-slate-900">
+            <thead>
+              <tr className="bg-white">
+                {Array.from({ length: section.numCols }).map((_, i) => (
+                  <th key={i} className="border border-slate-900 p-1 font-bold text-center uppercase" style={{ width: section.colWidths?.[i] || `${100 / section.numCols}%` }}>
+                    {readOnly ? section.colLabels?.[i] || "" : (
+                      <Input 
+                        value={section.colLabels?.[i] || ""} 
+                        onChange={e => {
+                          const newLabels = [...(section.colLabels || Array(section.numCols).fill(""))];
+                          newLabels[i] = e.target.value;
+                          onChange({ colLabels: newLabels });
+                        }}
+                        placeholder="Label..."
+                        className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase font-bold"
+                      />
+                    )}
+                  </th>
+                ))}
+              </tr>
+            </thead>
             <tbody>
               {section.rows.map((row) => (
                 <tr key={row.id} className="group relative">
