@@ -251,23 +251,19 @@ export default function ReportBuilder() {
       // Sections
       for (const section of page.layout.sections) {
         if (section.type === 'table') {
-          const tableRows: any[] = [
-            new TableRow({
-              children: [
-                new TableCell({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: (section as any).colLabels?.[0] || "Hasil evaluasi", bold: true, size: 18 })] })], borders: standardBorders, shading: { fill: "F2F2F2" } }),
-                new TableCell({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: (section as any).colLabels?.[1] || "Spesifikasi Teknik", bold: true, size: 18 })] })], borders: standardBorders, shading: { fill: "F2F2F2" } }),
-                new TableCell({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: (section as any).colLabels?.[2] || "Keterangan", bold: true, size: 18 })] })], borders: standardBorders, shading: { fill: "F2F2F2" } }),
-              ],
-            }),
-            new TableRow({
-              children: [
-                new TableCell({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: (section as any).dataColLabels?.[0] || "Label...", bold: true, size: 18 })] })], borders: standardBorders, shading: { fill: "F2F2F2" } }),
-                new TableCell({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: (section as any).dataColLabels?.[1] || "Label...", bold: true, size: 18 })] })], borders: standardBorders, shading: { fill: "F2F2F2" } }),
-                new TableCell({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: (section as any).dataColLabels?.[2] || "Label...", bold: true, size: 18 })] })], borders: standardBorders, shading: { fill: "F2F2F2" } }),
-              ],
+          const tableRows: any[] = [];
+          
+          // Header Row
+          const headerCells = section.colLabels.map((label: string) => 
+            new TableCell({ 
+              children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: label || "", bold: true, size: 18 })] })], 
+              borders: standardBorders, 
+              shading: { fill: "F2F2F2" } 
             })
-          ];
+          );
+          tableRows.push(new TableRow({ children: headerCells }));
 
+          // Data Rows
           for (const row of section.rows) {
             tableRows.push(new TableRow({
               children: row.cells.map((cell: any) => new TableCell({
@@ -279,26 +275,29 @@ export default function ReportBuilder() {
           children.push(new Table({ rows: tableRows, width: { size: 100, type: WidthType.PERCENTAGE } }), new Paragraph({ text: "" }));
         } else if (section.type === 'grid') {
           const rows: any[] = [];
-          for (let k = 0; k < section.cells.length; k += 3) {
-            const cellsBatch = section.cells.slice(k, k + 3);
+          const numCols = section.numCols || 1;
+          
+          for (let k = 0; k < section.cells.length; k += numCols) {
+            const cellsBatch = section.cells.slice(k, k + numCols);
             const rowChildren = [];
             for (const cell of cellsBatch) {
               const imgUrl = (cell as any).imageUrl;
               const imgBuffer = imgUrl ? await fetchImageBuffer(imgUrl) : null;
               rowChildren.push(new TableCell({
-                width: { size: 33.33, type: WidthType.PERCENTAGE },
+                width: { size: 100 / numCols, type: WidthType.PERCENTAGE },
                 children: [
                   imgBuffer ? new Paragraph({
                     alignment: AlignmentType.CENTER,
-                    children: [new ImageRun({ data: imgBuffer, transformation: { width: 150, height: 150 }, type: "png" })],
+                    children: [new ImageRun({ data: imgBuffer, transformation: { width: 450 / numCols, height: 300 / numCols }, type: "png" })],
                   }) : new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: `[Image]`, italics: true, color: "888888" })] }),
                   new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: cell.caption || "", size: 16, bold: true })] })
                 ],
                 borders: standardBorders,
               }));
             }
-            while (rowChildren.length < 3) {
-              rowChildren.push(new TableCell({ width: { size: 33.33, type: WidthType.PERCENTAGE }, children: [new Paragraph({ text: "" })], borders: standardBorders }));
+            // Fill empty cells if last row is incomplete
+            while (rowChildren.length < numCols) {
+              rowChildren.push(new TableCell({ width: { size: 100 / numCols, type: WidthType.PERCENTAGE }, children: [new Paragraph({ text: "" })], borders: standardBorders }));
             }
             rows.push(new TableRow({ children: rowChildren }));
           }
