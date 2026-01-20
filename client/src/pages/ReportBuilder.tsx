@@ -253,18 +253,6 @@ export default function ReportBuilder() {
         if (section.type === 'table') {
           const tableRows: any[] = [];
           
-          // Header Row
-          const headerCells = (section.colLabels || []).map((label: string) => 
-            new TableCell({ 
-              children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: label || "", bold: true, size: 18 })] })], 
-              borders: standardBorders, 
-              shading: { fill: "F2F2F2" } 
-            })
-          );
-          if (headerCells.length > 0) {
-            tableRows.push(new TableRow({ children: headerCells }));
-          }
-
           // Data Rows
           for (const row of section.rows) {
             tableRows.push(new TableRow({
