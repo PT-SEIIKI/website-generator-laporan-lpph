@@ -199,13 +199,9 @@ export function ReportGrid({ layout, onChange, readOnly = false }: ReportGridPro
 
       {!readOnly && (
         <div className="flex items-center justify-center gap-4 py-8 border-t border-dashed border-slate-200 no-print flex-wrap">
-          <Button variant="outline" onClick={() => addTableSection(2)} className="gap-2">
-            <TableIcon className="w-4 h-4" />
-            Add Table (2 Col)
-          </Button>
           <Button variant="outline" onClick={() => addTableSection(3)} className="gap-2">
             <TableIcon className="w-4 h-4" />
-            Add Table (3 Col)
+            Add Table
           </Button>
           <Button variant="outline" onClick={() => addGridSection(1)} className="gap-2">
             <div className="w-4 h-4 border border-current rounded-sm" />
