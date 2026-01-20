@@ -225,8 +225,12 @@ export default function ReportBuilder() {
               new TableCell({
                 width: { size: 50, type: WidthType.PERCENTAGE },
                 children: [
-                  new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: headerTitle || "EVALUASI HASIL UJI PERALATAN", bold: true, size: 24 })] }),
-                  new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "- PENGUKURAN TAHANAN PEMBUMIAN -", bold: true, size: 20 })] })
+                  new Paragraph({ alignment: AlignmentType.CENTER, children: [
+                    new TextRun({ text: headerTitle || "EVALUASI HASIL UJI PERALATAN", bold: true, size: 24 }),
+                  ] }),
+                  new Paragraph({ alignment: AlignmentType.CENTER, children: [
+                    new TextRun({ text: "- PENGUKURAN TAHANAN PEMBUMIAN -", bold: true, size: 20 }),
+                  ] })
                 ],
                 borders: standardBorders,
                 verticalAlign: VerticalAlign.CENTER,

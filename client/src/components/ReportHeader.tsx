@@ -79,23 +79,31 @@ export function ReportHeader({
 
         {/* Center: Title */}
         <div className="border-r border-slate-900 p-2 flex flex-col items-center justify-center relative group min-h-[110px] bg-white">
-          {readOnly ? (
-            <div className="text-center">
-              <div className="text-base font-bold leading-tight text-slate-900 uppercase">
-                {title?.split('\n')[0] || "PEMERIKSAAN DOKUMEN"}
+          <div className="w-full text-center">
+            {readOnly ? (
+              <div className="space-y-1">
+                <div className="text-base font-bold leading-tight text-slate-900 uppercase whitespace-pre-wrap">
+                  {title || "EVALUASI HASIL UJI PERALATAN"}
+                </div>
+                <div className="text-[10px] font-bold leading-tight text-slate-900 uppercase">
+                  - PENGUKURAN TAHANAN PEMBUMIAN -
+                </div>
               </div>
-              <div className="text-sm font-bold leading-tight text-slate-900 mt-1 uppercase">
-                {title?.split('\n').slice(1).join('\n') || "- SPESIFIKASI TEKNIK PERALATAN UTAMA -"}
+            ) : (
+              <div className="space-y-1">
+                <textarea
+                  value={title || ""}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Masukkan judul laporan..."
+                  className="w-full text-center text-base font-bold leading-tight resize-none border-0 bg-transparent focus:ring-0 focus:outline-none uppercase p-0"
+                  rows={2}
+                />
+                <div className="text-[10px] font-bold leading-tight text-slate-900 uppercase">
+                  - PENGUKURAN TAHANAN PEMBUMIAN -
+                </div>
               </div>
-            </div>
-          ) : (
-            <textarea
-              value={title || ""}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Masukkan judul laporan..."
-              className="w-full h-full text-center text-sm font-bold resize-none border-0 bg-transparent focus:ring-0 focus:outline-none uppercase"
-            />
-          )}
+            )}
+          </div>
         </div>
 
         {/* Right: Document Info */}
