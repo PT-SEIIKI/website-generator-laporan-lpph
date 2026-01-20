@@ -134,13 +134,13 @@ export function ReportGrid({ layout, onChange, readOnly = false }: ReportGridPro
                         {cell.imageUrl ? (
                           <img 
                             src={cell.imageUrl} 
-                            alt="Evidence" 
+                            alt="Bukti" 
                             className="w-full h-full object-cover"
                           />
                         ) : (
                           <div className="flex flex-col items-center gap-2 text-slate-400">
                             <ImageIcon className="w-8 h-8" />
-                            <span className="text-xs">No Image</span>
+                            <span className="text-xs">Tidak ada gambar</span>
                           </div>
                         )}
 
@@ -153,7 +153,7 @@ export function ReportGrid({ layout, onChange, readOnly = false }: ReportGridPro
                               onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0], section.id, cell.id)}
                             />
                             <div className="opacity-0 group-hover/cell:opacity-100 bg-white/90 px-3 py-1.5 rounded-full shadow-sm text-xs font-medium text-slate-700">
-                              {cell.imageUrl ? "Change Image" : "Upload Image"}
+                              {cell.imageUrl ? "Ubah Gambar" : "Unggah Gambar"}
                             </div>
                           </label>
                         )}
@@ -168,7 +168,7 @@ export function ReportGrid({ layout, onChange, readOnly = false }: ReportGridPro
                           <Input
                             value={cell.caption || ""}
                             onChange={(e) => updateCell(section.id, cell.id, { caption: e.target.value })}
-                            placeholder="Enter caption..."
+                            placeholder="Masukkan keterangan..."
                             className="h-6 text-center text-[10px] font-bold border-transparent hover:border-input focus:border-input bg-transparent uppercase"
                           />
                         )}
@@ -208,18 +208,18 @@ export function ReportGridControls({ onAddTable, onAddGrid }: { onAddTable: (col
     <div className="flex items-center justify-center gap-4 py-8 no-print flex-wrap">
       <Button variant="outline" onClick={() => onAddTable(1)} className="gap-2">
         <TableIcon className="w-4 h-4" />
-        Add Table
+        Tambah Tabel
       </Button>
       <Button variant="outline" onClick={() => onAddGrid(1)} className="gap-2">
         <div className="w-4 h-4 border border-current rounded-sm" />
-        Image Grid (1 Col)
+        Grid Gambar (1 Kolom)
       </Button>
       <Button variant="outline" onClick={() => onAddGrid(2)} className="gap-2">
         <div className="flex gap-0.5 w-4 h-4">
           <div className="w-1/2 border border-current rounded-sm" />
           <div className="w-1/2 border border-current rounded-sm" />
         </div>
-        Image Grid (2 Col)
+        Grid Gambar (2 Kolom)
       </Button>
       <Button variant="outline" onClick={() => onAddGrid(3)} className="gap-2">
         <div className="flex gap-0.5 w-4 h-4">
@@ -227,7 +227,7 @@ export function ReportGridControls({ onAddTable, onAddGrid }: { onAddTable: (col
           <div className="w-1/3 border border-current rounded-sm" />
           <div className="w-1/3 border border-current rounded-sm" />
         </div>
-        Image Grid (3 Col)
+        Grid Gambar (3 Kolom)
       </Button>
     </div>
   );

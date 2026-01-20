@@ -40,9 +40,9 @@ export function ReportFooter({
     try {
       const res = await uploadFile.mutateAsync(file);
       setTechnicianSignatureUrl(res.url);
-      toast({ title: "Signature uploaded" });
+      toast({ title: "Tanda tangan berhasil diunggah" });
     } catch (err) {
-      toast({ title: "Failed upload", variant: "destructive" });
+      toast({ title: "Gagal mengunggah", variant: "destructive" });
     }
   };
 
@@ -53,9 +53,9 @@ export function ReportFooter({
     try {
       const res = await uploadFile.mutateAsync(file);
       setOwnerSignatureUrl(res.url);
-      toast({ title: "Signature uploaded" });
+      toast({ title: "Tanda tangan berhasil diunggah" });
     } catch (err) {
-      toast({ title: "Failed upload", variant: "destructive" });
+      toast({ title: "Gagal mengunggah", variant: "destructive" });
     }
   };
 
@@ -74,7 +74,7 @@ export function ReportFooter({
               />
             ) : (
               <div className="w-full h-full border border-dashed border-slate-200 rounded flex items-center justify-center text-[10px] text-slate-300">
-                (Sign Here)
+                (Tanda Tangan di Sini)
               </div>
             )}
 
@@ -116,7 +116,7 @@ export function ReportFooter({
               />
             ) : (
               <div className="w-full h-full border border-dashed border-slate-200 rounded flex items-center justify-center text-[10px] text-slate-300">
-                (Sign Here)
+                (Tanda Tangan di Sini)
               </div>
             )}
 

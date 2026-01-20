@@ -150,9 +150,9 @@ export default function ReportBuilder() {
         footerSignatureUrl: signatureUrl,
         operationYear: year,
       });
-      toast({ title: "Report saved successfully" });
+      toast({ title: "Laporan berhasil disimpan" });
     } catch (err) {
-      toast({ title: "Failed to save", variant: "destructive" });
+      toast({ title: "Gagal menyimpan", variant: "destructive" });
     }
   };
 

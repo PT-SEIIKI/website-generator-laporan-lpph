@@ -58,7 +58,7 @@ export function Header({
                 className="h-7 text-xs"
                 onClick={() => setIsPreview(true)}
               >
-                Preview
+                Pratinjau
               </Button>
             </div>
           )}
@@ -71,7 +71,7 @@ export function Header({
               size="sm" 
               onClick={onExportPDF}
               className="hidden sm:flex"
-              title="Download as PDF"
+              title="Unduh sebagai PDF"
             >
               <Download className="mr-2 h-4 w-4" />
               PDF
@@ -82,20 +82,10 @@ export function Header({
               size="sm" 
               onClick={onExportWord}
               className="hidden sm:flex"
-              title="Download as Word"
+              title="Unduh sebagai Word"
             >
               <Download className="mr-2 h-4 w-4" />
               Word
-            </Button>
-            
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={onPrint}
-              className="hidden sm:flex"
-            >
-              <Printer className="mr-2 h-4 w-4" />
-              Print
             </Button>
             
             <Button 
@@ -105,7 +95,7 @@ export function Header({
               className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm"
             >
               <Save className="mr-2 h-4 w-4" />
-              {isSaving ? "Saving..." : "Save Report"}
+              {isSaving ? "Menyimpan..." : "Simpan Laporan"}
             </Button>
           </div>
         )}

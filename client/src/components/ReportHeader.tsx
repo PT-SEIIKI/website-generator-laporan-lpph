@@ -39,9 +39,9 @@ export function ReportHeader({
     try {
       const res = await uploadFile.mutateAsync(file);
       setLogoUrl(res.url);
-      toast({ title: "Logo uploaded successfully" });
+      toast({ title: "Logo berhasil diunggah" });
     } catch (err) {
-      toast({ title: "Failed to upload logo", variant: "destructive" });
+      toast({ title: "Gagal mengunggah logo", variant: "destructive" });
     }
   };
 
