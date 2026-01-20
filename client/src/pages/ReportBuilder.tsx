@@ -401,6 +401,10 @@ export default function ReportBuilder() {
                 <DataTableSectionControls
                   key={section.id}
                   colInput={section.type === 'grid' ? section.numCols.toString() : section.numCols.toString()}
+                  onRemove={() => {
+                    const sections = layout.pages[currentPageIndex].layout.sections.filter(s => s.id !== section.id);
+                    updatePageLayout(currentPageIndex, { sections });
+                  }}
                   onColChange={(val) => {
                     const newCount = parseInt(val);
                     if (isNaN(newCount)) {

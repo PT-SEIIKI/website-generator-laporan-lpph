@@ -140,15 +140,28 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
 
 export function DataTableSectionControls({ 
   colInput, onColChange,
-  rowInput, onRowChange
+  rowInput, onRowChange,
+  onRemove
 }: { 
   colInput: string;
   onColChange: (v: string) => void;
   rowInput: string;
   onRowChange: (v: string) => void;
+  onRemove?: () => void;
 }) {
   return (
-    <div className="flex flex-col gap-3 p-3 bg-slate-50 border border-slate-200 rounded-md no-print mb-4 shadow-sm">
+    <div className="flex flex-col gap-3 p-3 bg-slate-50 border border-slate-200 rounded-md no-print mb-4 shadow-sm relative group">
+      {onRemove && (
+        <Button
+          variant="destructive"
+          size="icon"
+          className="absolute -right-12 top-0 h-8 w-8 shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+          onClick={onRemove}
+          title="Hapus Bagian Ini"
+        >
+          <Trash2 className="w-4 h-4" />
+        </Button>
+      )}
       <div className="flex items-center gap-2">
          <TableIcon className="w-4 h-4 text-primary" />
          <span className="text-xs font-bold text-slate-700 uppercase">PENGATURAN</span>
