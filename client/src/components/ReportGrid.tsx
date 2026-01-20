@@ -196,34 +196,36 @@ export function ReportGrid({ layout, onChange, readOnly = false }: ReportGridPro
           )}
         </div>
       ))}
+    </div>
+  );
+}
 
-      {!readOnly && (
-        <div className="flex items-center justify-center gap-4 py-8 border-t border-dashed border-slate-200 no-print flex-wrap">
-          <Button variant="outline" onClick={() => addTableSection(3)} className="gap-2">
-            <TableIcon className="w-4 h-4" />
-            Add Table
-          </Button>
-          <Button variant="outline" onClick={() => addGridSection(1)} className="gap-2">
-            <div className="w-4 h-4 border border-current rounded-sm" />
-            Image Grid (1 Col)
-          </Button>
-          <Button variant="outline" onClick={() => addGridSection(2)} className="gap-2">
-            <div className="flex gap-0.5 w-4 h-4">
-              <div className="w-1/2 border border-current rounded-sm" />
-              <div className="w-1/2 border border-current rounded-sm" />
-            </div>
-            Image Grid (2 Col)
-          </Button>
-          <Button variant="outline" onClick={() => addGridSection(3)} className="gap-2">
-            <div className="flex gap-0.5 w-4 h-4">
-              <div className="w-1/3 border border-current rounded-sm" />
-              <div className="w-1/3 border border-current rounded-sm" />
-              <div className="w-1/3 border border-current rounded-sm" />
-            </div>
-            Image Grid (3 Col)
-          </Button>
+export function ReportGridControls({ onAddTable, onAddGrid }: { onAddTable: (cols: number) => void, onAddGrid: (cols: 1 | 2 | 3) => void }) {
+  return (
+    <div className="flex items-center justify-center gap-4 py-8 no-print flex-wrap">
+      <Button variant="outline" onClick={() => onAddTable(3)} className="gap-2">
+        <TableIcon className="w-4 h-4" />
+        Add Table
+      </Button>
+      <Button variant="outline" onClick={() => onAddGrid(1)} className="gap-2">
+        <div className="w-4 h-4 border border-current rounded-sm" />
+        Image Grid (1 Col)
+      </Button>
+      <Button variant="outline" onClick={() => onAddGrid(2)} className="gap-2">
+        <div className="flex gap-0.5 w-4 h-4">
+          <div className="w-1/2 border border-current rounded-sm" />
+          <div className="w-1/2 border border-current rounded-sm" />
         </div>
-      )}
+        Image Grid (2 Col)
+      </Button>
+      <Button variant="outline" onClick={() => onAddGrid(3)} className="gap-2">
+        <div className="flex gap-0.5 w-4 h-4">
+          <div className="w-1/3 border border-current rounded-sm" />
+          <div className="w-1/3 border border-current rounded-sm" />
+          <div className="w-1/3 border border-current rounded-sm" />
+        </div>
+        Image Grid (3 Col)
+      </Button>
     </div>
   );
 }

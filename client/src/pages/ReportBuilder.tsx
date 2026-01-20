@@ -5,9 +5,9 @@ import { Header } from "@/components/Header";
 import { A4Page } from "@/components/A4Page";
 import { ReportHeader } from "@/components/ReportHeader";
 import { ReportFooter } from "@/components/ReportFooter";
-import { ReportGrid } from "@/components/ReportGrid";
-import { IdentityTable } from "@/components/IdentityTable";
-import { type ReportLayout, type MultiPageLayout } from "@shared/schema";
+import { ReportGrid, ReportGridControls } from "@/components/ReportGrid";
+import { DataTableSectionControls } from "@/components/DataTableSection";
+import { type ReportLayout, type MultiPageLayout, type ReportGridSection, type TableSection } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, ChevronLeft, ChevronRight, Plus as PlusIcon, Trash2 as TrashIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -72,6 +72,46 @@ export default function ReportBuilder() {
     const newPage = { id: crypto.randomUUID(), layout: { sections: [] } };
     setLayout(prev => ({ ...prev, pages: [...prev.pages, newPage] }));
     setCurrentPageIndex(layout.pages.length);
+  };
+
+  const addGridSection = (numCols: 1 | 2 | 3) => {
+    const colWidths = numCols === 1 ? ["100%"] : numCols === 2 ? ["50%", "50%"] : ["33%", "33%", "33%"];
+    const newSection: ReportGridSection = {
+      id: crypto.randomUUID(),
+      type: "grid",
+      numCols,
+      colWidths,
+      cells: Array(numCols).fill(null).map(() => ({
+        id: crypto.randomUUID(),
+        type: "image",
+        caption: ""
+      })),
+    };
+    
+    const pageLayout = layout.pages[currentPageIndex].layout;
+    updatePageLayout(currentPageIndex, { sections: [...(pageLayout.sections || []), newSection] });
+  };
+
+  const addTableSection = (numCols: number = 3) => {
+    const colLabels = numCols === 3 ? ["", "", ""] : Array(numCols).fill("");
+    const colWidths = numCols === 2 ? ["50%", "50%"] : numCols === 3 ? ["40%", "30%", "30%"] : Array(numCols).fill(`${100/numCols}%`);
+    
+    const newSection: TableSection = {
+      id: crypto.randomUUID(),
+      type: "table",
+      title: "",
+      evaluationLabel: "",
+      description: "",
+      numCols,
+      colLabels,
+      colWidths,
+      rows: [
+        { id: crypto.randomUUID(), cells: Array(numCols).fill("") }
+      ],
+    };
+    
+    const pageLayout = layout.pages[currentPageIndex].layout;
+    updatePageLayout(currentPageIndex, { sections: [...(pageLayout.sections || []), newSection] });
   };
 
   const removePage = (index: number) => {
@@ -335,6 +375,73 @@ export default function ReportBuilder() {
 
       <main className="flex-1 relative overflow-y-auto py-8">
         <div id="report-pages-container" className="flex flex-col gap-8">
+          <div className="max-w-[210mm] mx-auto w-full no-print space-y-4">
+            <ReportGridControls 
+              onAddTable={addTableSection}
+              onAddGrid={addGridSection}
+            />
+            
+            {/* Global controls for selected table section */}
+            {layout.pages[currentPageIndex].layout.sections?.map(section => (
+              section.type === 'table' && (
+                <DataTableSectionControls
+                  key={section.id}
+                  evalColInput="3" // Static for now, could be made stateful if needed
+                  setEvalColInput={() => {}} 
+                  evalRowInput="2"
+                  setEvalRowInput={() => {}}
+                  dataColInput={section.numCols.toString()}
+                  onDataColChange={(val) => {
+                    const newCount = parseInt(val);
+                    if (isNaN(newCount)) return;
+                    const count = Math.min(10, newCount);
+                    const newLabels = [...(section.dataColLabels || [])];
+                    const newWidths = Array(count).fill(`${100 / count}%`);
+                    
+                    const updatedSection = {
+                      ...section,
+                      numCols: count,
+                      dataColLabels: newLabels.slice(0, count),
+                      colWidths: newWidths,
+                      rows: section.rows.map(row => ({
+                        ...row,
+                        cells: row.cells.length > count 
+                          ? row.cells.slice(0, count) 
+                          : [...row.cells, ...Array(count - row.cells.length).fill("")]
+                      }))
+                    };
+                    
+                    const sections = [...layout.pages[currentPageIndex].layout.sections];
+                    const idx = sections.findIndex(s => s.id === section.id);
+                    sections[idx] = updatedSection;
+                    updatePageLayout(currentPageIndex, { sections });
+                  }}
+                  dataRowInput={section.rows.length.toString()}
+                  onDataRowChange={(val) => {
+                    const count = parseInt(val);
+                    if (isNaN(count)) return;
+                    const currentRows = [...section.rows];
+                    let newRows;
+                    if (count > currentRows.length) {
+                      const extraRows = Array.from({ length: count - currentRows.length }).map(() => ({
+                        id: crypto.randomUUID(),
+                        cells: Array(section.numCols).fill(""),
+                      }));
+                      newRows = [...currentRows, ...extraRows];
+                    } else {
+                      newRows = currentRows.slice(0, count);
+                    }
+                    
+                    const sections = [...layout.pages[currentPageIndex].layout.sections];
+                    const idx = sections.findIndex(s => s.id === section.id);
+                    sections[idx] = { ...section, rows: newRows };
+                    updatePageLayout(currentPageIndex, { sections });
+                  }}
+                />
+              )
+            ))}
+          </div>
+
           {/* Render all pages for PDF export visibility, but keep them accessible */}
           {layout.pages.map((page, index) => (
             <div key={page.id} className={cn(

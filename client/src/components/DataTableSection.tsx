@@ -98,67 +98,6 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
 
   return (
     <div className="space-y-4">
-      {!readOnly && (
-        <div className="flex flex-col gap-3 p-3 bg-slate-50 border border-slate-200 rounded-md no-print mb-4 shadow-sm">
-          <div className="flex items-center gap-2">
-             <TableIcon className="w-4 h-4 text-primary" />
-             <span className="text-xs font-bold text-slate-700">PENGATURAN TABEL</span>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Upper Table Controls (Evaluation) */}
-            <div className="space-y-2 p-2 bg-white rounded border border-slate-100">
-              <span className="text-[10px] font-bold text-primary uppercase">1. Tabel Evaluasi (Atas)</span>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] text-slate-500">Kolom:</span>
-                  <Input 
-                    type="text" 
-                    value={evalColInput} 
-                    onChange={(e) => setEvalColInput(e.target.value)}
-                    className="h-7 w-12 text-[10px] border-primary/20 focus:border-primary"
-                  />
-                </div>
-                <div className="flex items-center gap-2 border-l pl-4">
-                  <span className="text-[10px] text-slate-500">Baris:</span>
-                  <Input 
-                    type="text" 
-                    value={evalRowInput} 
-                    onChange={(e) => setEvalRowInput(e.target.value)}
-                    className="h-7 w-12 text-[10px] border-primary/20 focus:border-primary"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Lower Table Controls (Data) */}
-            <div className="space-y-2 p-2 bg-white rounded border border-slate-100">
-              <span className="text-[10px] font-bold text-primary uppercase">2. Tabel Data (Bawah)</span>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] text-slate-500">Kolom:</span>
-                  <Input 
-                    type="text" 
-                    value={dataColInput} 
-                    onChange={(e) => updateDataColumns(e.target.value)}
-                    className="h-7 w-12 text-[10px] border-primary/20 focus:border-primary"
-                  />
-                </div>
-                <div className="flex items-center gap-2 border-l pl-4">
-                  <span className="text-[10px] text-slate-500">Baris:</span>
-                  <Input 
-                    type="text" 
-                    value={dataRowInput} 
-                    onChange={(e) => updateDataRowsCount(e.target.value)}
-                    className="h-7 w-12 text-[10px] border-primary/20 focus:border-primary"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
       <div className="overflow-x-auto space-y-6">
         {/* UPPER TABLE: EVALUATION */}
         <div className="relative">
@@ -281,6 +220,83 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
           </Button>
         </div>
       )}
+    </div>
+  );
+}
+
+export function DataTableSectionControls({ 
+  evalColInput, setEvalColInput, 
+  evalRowInput, setEvalRowInput,
+  dataColInput, onDataColChange,
+  dataRowInput, onDataRowChange
+}: {
+  evalColInput: string;
+  setEvalColInput: (v: string) => void;
+  evalRowInput: string;
+  setEvalRowInput: (v: string) => void;
+  dataColInput: string;
+  onDataColChange: (v: string) => void;
+  dataRowInput: string;
+  onDataRowChange: (v: string) => void;
+}) {
+  return (
+    <div className="flex flex-col gap-3 p-3 bg-slate-50 border border-slate-200 rounded-md no-print mb-4 shadow-sm">
+      <div className="flex items-center gap-2">
+         <TableIcon className="w-4 h-4 text-primary" />
+         <span className="text-xs font-bold text-slate-700">PENGATURAN TABEL</span>
+      </div>
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Upper Table Controls (Evaluation) */}
+        <div className="space-y-2 p-2 bg-white rounded border border-slate-100">
+          <span className="text-[10px] font-bold text-primary uppercase">1. Tabel Evaluasi (Atas)</span>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] text-slate-500">Kolom:</span>
+              <Input 
+                type="text" 
+                value={evalColInput} 
+                onChange={(e) => setEvalColInput(e.target.value)}
+                className="h-7 w-12 text-[10px] border-primary/20 focus:border-primary"
+              />
+            </div>
+            <div className="flex items-center gap-2 border-l pl-4">
+              <span className="text-[10px] text-slate-500">Baris:</span>
+              <Input 
+                type="text" 
+                value={evalRowInput} 
+                onChange={(e) => setEvalRowInput(e.target.value)}
+                className="h-7 w-12 text-[10px] border-primary/20 focus:border-primary"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Lower Table Controls (Data) */}
+        <div className="space-y-2 p-2 bg-white rounded border border-slate-100">
+          <span className="text-[10px] font-bold text-primary uppercase">2. Tabel Data (Bawah)</span>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] text-slate-500">Kolom:</span>
+              <Input 
+                type="text" 
+                value={dataColInput} 
+                onChange={(e) => onDataColChange(e.target.value)}
+                className="h-7 w-12 text-[10px] border-primary/20 focus:border-primary"
+              />
+            </div>
+            <div className="flex items-center gap-2 border-l pl-4">
+              <span className="text-[10px] text-slate-500">Baris:</span>
+              <Input 
+                type="text" 
+                value={dataRowInput} 
+                onChange={(e) => onDataRowChange(e.target.value)}
+                className="h-7 w-12 text-[10px] border-primary/20 focus:border-primary"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
