@@ -3,6 +3,7 @@ import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2, FileText, Loader2, Download } from "lucide-react";
 import { format } from "date-fns";
+import { id } from "date-fns/locale";
 import { Card } from "@/components/ui/card";
 import {
   AlertDialog,
@@ -145,7 +146,7 @@ export default function Home() {
                     </p>
                     
                     <div className="flex items-center justify-between text-xs text-slate-400 mt-auto pt-4 border-t border-slate-100">
-                      <span>{format(new Date(report.createdAt || new Date()), "d MMM yyyy")}</span>
+                      <span>{format(new Date(report.createdAt || new Date()), "d MMM yyyy", { locale: id })}</span>
                       
                       {/* Delete Action - Stop Propagation to prevent opening link */}
                       <div onClick={(e) => e.stopPropagation()}>
