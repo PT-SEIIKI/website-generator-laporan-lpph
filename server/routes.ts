@@ -49,33 +49,41 @@ export async function registerRoutes(
 
   app.post(api.reports.create.path, async (req, res) => {
     try {
+      console.log(`[API] Creating report with data:`, JSON.stringify(req.body).substring(0, 200) + "...");
       const input = api.reports.create.input.parse(req.body);
       const report = await storage.createReport(input);
+      console.log(`[API] Report created successfully: ID ${report.id}`);
       res.status(201).json(report);
     } catch (err) {
+      console.error(`[API] Error creating report:`, err);
       if (err instanceof z.ZodError) {
         return res.status(400).json({
           message: err.errors[0].message,
           field: err.errors[0].path.join('.'),
         });
       }
-      throw err;
+      res.status(500).json({ message: "Internal Server Error" });
     }
   });
 
   app.put(api.reports.update.path, async (req, res) => {
     try {
+      console.log(`[API] Updating report ${req.params.id}`);
       const input = api.reports.update.input.parse(req.body);
       const report = await storage.updateReport(Number(req.params.id), input);
+      if (!report) {
+        return res.status(404).json({ message: 'Report not found' });
+      }
       res.json(report);
     } catch (err) {
+      console.error(`[API] Error updating report:`, err);
       if (err instanceof z.ZodError) {
         return res.status(400).json({
           message: err.errors[0].message,
           field: err.errors[0].path.join('.'),
         });
       }
-      throw err;
+      res.status(500).json({ message: "Internal Server Error" });
     }
   });
 
