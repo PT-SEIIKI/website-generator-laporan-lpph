@@ -1,7 +1,7 @@
 import { useReports, useCreateReport, useDeleteReport } from "@/hooks/use-reports";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, FileText, Loader2 } from "lucide-react";
+import { Plus, Trash2, FileText, Loader2, Download } from "lucide-react";
 import { format } from "date-fns";
 import { Card } from "@/components/ui/card";
 import {
