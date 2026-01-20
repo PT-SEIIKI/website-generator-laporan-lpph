@@ -30,12 +30,12 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
     if (isNaN(newCount) || newCount < 1) return;
     
     const count = Math.min(10, newCount);
-    const newLabels = [...(section.colLabels || [])];
+    const newLabels = [...(section.dataColLabels || [])];
     const newWidths = Array(count).fill(`${100 / count}%`);
     
     onChange({
       numCols: count,
-      colLabels: newLabels.slice(0, count),
+      dataColLabels: newLabels.slice(0, count),
       colWidths: newWidths,
       rows: section.rows.map(row => ({
         ...row,
@@ -216,13 +216,14 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
               <tr className="bg-white">
                 {Array.from({ length: section.numCols }).map((_, i) => (
                   <th key={i} className="border border-slate-900 p-1 font-bold text-center uppercase" style={{ width: section.colWidths?.[i] || `${100 / section.numCols}%` }}>
-                    {readOnly ? section.colLabels?.[i] || "" : (
+                    {readOnly ? section.dataColLabels?.[i] || "" : (
                       <Input 
-                        value={section.colLabels?.[i] || ""} 
+                        value={section.dataColLabels?.[i] || ""} 
                         onChange={e => {
-                          const newLabels = [...(section.colLabels || Array(section.numCols).fill(""))];
+                          const currentLabels = section.dataColLabels || Array(section.numCols).fill("");
+                          const newLabels = [...currentLabels];
                           newLabels[i] = e.target.value;
-                          onChange({ colLabels: newLabels });
+                          onChange({ dataColLabels: newLabels });
                         }}
                         placeholder="Label..."
                         className="h-5 text-[10px] text-center border-0 bg-transparent p-0 uppercase font-bold"
