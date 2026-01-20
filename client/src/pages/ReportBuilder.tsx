@@ -254,14 +254,16 @@ export default function ReportBuilder() {
           const tableRows: any[] = [];
           
           // Header Row
-          const headerCells = section.colLabels.map((label: string) => 
+          const headerCells = (section.colLabels || []).map((label: string) => 
             new TableCell({ 
               children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: label || "", bold: true, size: 18 })] })], 
               borders: standardBorders, 
               shading: { fill: "F2F2F2" } 
             })
           );
-          tableRows.push(new TableRow({ children: headerCells }));
+          if (headerCells.length > 0) {
+            tableRows.push(new TableRow({ children: headerCells }));
+          }
 
           // Data Rows
           for (const row of section.rows) {
@@ -288,7 +290,14 @@ export default function ReportBuilder() {
                 children: [
                   imgBuffer ? new Paragraph({
                     alignment: AlignmentType.CENTER,
-                    children: [new ImageRun({ data: imgBuffer, transformation: { width: 450 / numCols, height: 300 / numCols }, type: "png" })],
+                    children: [new ImageRun({ 
+                      data: imgBuffer, 
+                      transformation: { 
+                        width: 500 / numCols, 
+                        height: 350 / numCols 
+                      }, 
+                      type: "png" 
+                    })],
                   }) : new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: `[Image]`, italics: true, color: "888888" })] }),
                   new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: cell.caption || "", size: 16, bold: true })] })
                 ],
@@ -336,7 +345,17 @@ export default function ReportBuilder() {
       children.push(footerTable);
     }
 
-    const doc = new Document({ sections: [{ properties: { page: { size: { width: 11906, height: 16838 } } }, children }] });
+    const doc = new Document({ 
+      sections: [{ 
+        properties: { 
+          page: { 
+            size: { width: 11906, height: 16838 },
+            margin: { top: 720, bottom: 720, left: 720, right: 720 }
+          } 
+        }, 
+        children 
+      }] 
+    });
     const blob = await Packer.toBlob(doc);
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
