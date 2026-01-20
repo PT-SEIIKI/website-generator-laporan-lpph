@@ -2,11 +2,20 @@ import { pgTable, text, serial, jsonb, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+export type ReportPage = {
+  id: string;
+  layout: ReportLayout;
+};
+
+export type MultiPageLayout = {
+  pages: ReportPage[];
+};
+
 export const reports = pgTable("reports", {
   id: serial("id").primaryKey(),
   title: text("title").notNull().default("VISUAL TEST ITEM – UJI LAIK OPERASI"),
   documentNumber: text("document_number").notNull(),
-  layoutJson: jsonb("layout_json").notNull(),
+  layoutJson: jsonb("layout_json").notNull(), // Will now store MultiPageLayout
   headerLogoUrl: text("header_logo_url"),
   headerTitle: text("header_title"),
   headerRevision: text("header_revision"),
