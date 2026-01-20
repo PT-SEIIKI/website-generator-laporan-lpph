@@ -34,6 +34,7 @@ export function ReportFooter({
   const uploadFile = useUploadFile();
 
   const handleTechnicianUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (readOnly) return;
     const file = e.target.files?.[0];
     if (!file) return;
     try {
@@ -46,6 +47,7 @@ export function ReportFooter({
   };
 
   const handleOwnerUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (readOnly) return;
     const file = e.target.files?.[0];
     if (!file) return;
     try {

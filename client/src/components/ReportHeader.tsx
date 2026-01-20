@@ -20,24 +20,19 @@ interface ReportHeaderProps {
 }
 
 export function ReportHeader({ 
-  logoUrl, 
-  setLogoUrl,
-  title,
-  setTitle,
-  docNumber,
-  setDocNumber,
-  revision,
-  setRevision,
-  issuedDate,
-  setIssuedDate,
-  revisionDate,
-  setRevisionDate,
-  readOnly = false 
+  logoUrl, setLogoUrl, 
+  title, setTitle, 
+  docNumber, setDocNumber, 
+  revision, setRevision, 
+  issuedDate, setIssuedDate, 
+  revisionDate, setRevisionDate,
+  readOnly = false
 }: ReportHeaderProps) {
   const { toast } = useToast();
   const uploadFile = useUploadFile();
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (readOnly) return;
     const file = e.target.files?.[0];
     if (!file) return;
 

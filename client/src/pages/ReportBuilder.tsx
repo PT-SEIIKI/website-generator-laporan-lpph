@@ -38,6 +38,8 @@ export default function ReportBuilder() {
   const [signatureUrl, setSignatureUrl] = useState("");
   const [year, setYear] = useState(new Date().getFullYear().toString());
 
+  const [isPreview, setIsPreview] = useState(false);
+
   // Sync state when report loads
   useEffect(() => {
     if (report) {
@@ -348,7 +350,16 @@ export default function ReportBuilder() {
 
   return (
     <div className="min-h-screen bg-slate-100/50 flex flex-col font-sans">
-      <Header title={docNumber || "Untitled Report"} onSave={handleSave} onPrint={handlePrint} onExportPDF={handleExportPDF} onExportWord={handleExportWord} isSaving={updateReport.isPending} />
+      <Header 
+        title={docNumber || "Untitled Report"} 
+        onSave={handleSave} 
+        onPrint={handlePrint} 
+        onExportPDF={handleExportPDF} 
+        onExportWord={handleExportWord} 
+        isSaving={updateReport.isPending}
+        isPreview={isPreview}
+        setIsPreview={setIsPreview}
+      />
       
       {/* Page Navigation Controls */}
       <div className="sticky top-16 z-10 bg-white border-b px-4 py-2 flex items-center justify-between no-print">
@@ -361,86 +372,90 @@ export default function ReportBuilder() {
             Next <ChevronRight className="h-4 w-4 ml-1" />
           </Button>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={addPage} className="text-primary border-primary hover:bg-primary/5">
-            <PlusIcon className="h-4 w-4 mr-1" /> Tambah Halaman
-          </Button>
-          {layout.pages.length > 1 && (
-            <Button variant="outline" size="sm" onClick={() => removePage(currentPageIndex)} className="text-destructive border-destructive hover:bg-destructive/5">
-              <TrashIcon className="h-4 w-4 mr-1" /> Hapus Halaman
+        {!isPreview && (
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={addPage} className="text-primary border-primary hover:bg-primary/5">
+              <PlusIcon className="h-4 w-4 mr-1" /> Tambah Halaman
             </Button>
-          )}
-        </div>
+            {layout.pages.length > 1 && (
+              <Button variant="outline" size="sm" onClick={() => removePage(currentPageIndex)} className="text-destructive border-destructive hover:bg-destructive/5">
+                <TrashIcon className="h-4 w-4 mr-1" /> Hapus Halaman
+              </Button>
+            )}
+          </div>
+        )}
       </div>
 
       <main className="flex-1 relative overflow-y-auto py-8">
         <div id="report-pages-container" className="flex flex-col gap-8">
-          <div className="max-w-[210mm] mx-auto w-full no-print space-y-4">
-            <ReportGridControls 
-              onAddTable={addTableSection}
-              onAddGrid={addGridSection}
-            />
-            
-            {/* Global controls for selected table section */}
-            {layout.pages[currentPageIndex].layout.sections?.map(section => (
-              section.type === 'table' && (
-                <DataTableSectionControls
-                  key={section.id}
-                  evalColInput="3" // Static for now, could be made stateful if needed
-                  setEvalColInput={() => {}} 
-                  evalRowInput="2"
-                  setEvalRowInput={() => {}}
-                  dataColInput={section.numCols.toString()}
-                  onDataColChange={(val) => {
-                    const newCount = parseInt(val);
-                    if (isNaN(newCount)) return;
-                    const count = Math.min(10, newCount);
-                    const newLabels = [...(section.dataColLabels || [])];
-                    const newWidths = Array(count).fill(`${100 / count}%`);
-                    
-                    const updatedSection = {
-                      ...section,
-                      numCols: count,
-                      dataColLabels: newLabels.slice(0, count),
-                      colWidths: newWidths,
-                      rows: section.rows.map(row => ({
-                        ...row,
-                        cells: row.cells.length > count 
-                          ? row.cells.slice(0, count) 
-                          : [...row.cells, ...Array(count - row.cells.length).fill("")]
-                      }))
-                    };
-                    
-                    const sections = [...layout.pages[currentPageIndex].layout.sections];
-                    const idx = sections.findIndex(s => s.id === section.id);
-                    sections[idx] = updatedSection;
-                    updatePageLayout(currentPageIndex, { sections });
-                  }}
-                  dataRowInput={section.rows.length.toString()}
-                  onDataRowChange={(val) => {
-                    const count = parseInt(val);
-                    if (isNaN(count)) return;
-                    const currentRows = [...section.rows];
-                    let newRows;
-                    if (count > currentRows.length) {
-                      const extraRows = Array.from({ length: count - currentRows.length }).map(() => ({
-                        id: crypto.randomUUID(),
-                        cells: Array(section.numCols).fill(""),
-                      }));
-                      newRows = [...currentRows, ...extraRows];
-                    } else {
-                      newRows = currentRows.slice(0, count);
-                    }
-                    
-                    const sections = [...layout.pages[currentPageIndex].layout.sections];
-                    const idx = sections.findIndex(s => s.id === section.id);
-                    sections[idx] = { ...section, rows: newRows };
-                    updatePageLayout(currentPageIndex, { sections });
-                  }}
-                />
-              )
-            ))}
-          </div>
+          {!isPreview && (
+            <div className="max-w-[210mm] mx-auto w-full no-print space-y-4">
+              <ReportGridControls 
+                onAddTable={addTableSection}
+                onAddGrid={addGridSection}
+              />
+              
+              {/* Global controls for selected table section */}
+              {layout.pages[currentPageIndex].layout.sections?.map(section => (
+                section.type === 'table' && (
+                  <DataTableSectionControls
+                    key={section.id}
+                    evalColInput="3" // Static for now, could be made stateful if needed
+                    setEvalColInput={() => {}} 
+                    evalRowInput="2"
+                    setEvalRowInput={() => {}}
+                    dataColInput={section.numCols.toString()}
+                    onDataColChange={(val) => {
+                      const newCount = parseInt(val);
+                      if (isNaN(newCount)) return;
+                      const count = Math.min(10, newCount);
+                      const newLabels = [...(section.dataColLabels || [])];
+                      const newWidths = Array(count).fill(`${100 / count}%`);
+                      
+                      const updatedSection = {
+                        ...section,
+                        numCols: count,
+                        dataColLabels: newLabels.slice(0, count),
+                        colWidths: newWidths,
+                        rows: section.rows.map(row => ({
+                          ...row,
+                          cells: row.cells.length > count 
+                            ? row.cells.slice(0, count) 
+                            : [...row.cells, ...Array(count - row.cells.length).fill("")]
+                        }))
+                      };
+                      
+                      const sections = [...layout.pages[currentPageIndex].layout.sections];
+                      const idx = sections.findIndex(s => s.id === section.id);
+                      sections[idx] = updatedSection;
+                      updatePageLayout(currentPageIndex, { sections });
+                    }}
+                    dataRowInput={section.rows.length.toString()}
+                    onDataRowChange={(val) => {
+                      const count = parseInt(val);
+                      if (isNaN(count)) return;
+                      const currentRows = [...section.rows];
+                      let newRows;
+                      if (count > currentRows.length) {
+                        const extraRows = Array.from({ length: count - currentRows.length }).map(() => ({
+                          id: crypto.randomUUID(),
+                          cells: Array(section.numCols).fill(""),
+                        }));
+                        newRows = [...currentRows, ...extraRows];
+                      } else {
+                        newRows = currentRows.slice(0, count);
+                      }
+                      
+                      const sections = [...layout.pages[currentPageIndex].layout.sections];
+                      const idx = sections.findIndex(s => s.id === section.id);
+                      sections[idx] = { ...section, rows: newRows };
+                      updatePageLayout(currentPageIndex, { sections });
+                    }}
+                  />
+                )
+              ))}
+            </div>
+          )}
 
           {/* Render all pages for PDF export visibility, but keep them accessible */}
           {layout.pages.map((page, index) => (
@@ -448,18 +463,45 @@ export default function ReportBuilder() {
               "transition-all",
               index === currentPageIndex ? "block" : "hidden no-print"
             )}>
-              <A4Page id={`page-${page.id}`} className="print:m-0 print:shadow-none print:p-0">
+              <A4Page id={`page-${page.id}`} className={cn("print:m-0 print:shadow-none print:p-0", isPreview ? "shadow-none border border-slate-200" : "")}>
                 <div className="flex flex-col h-full">
-                  <ReportHeader logoUrl={logoUrl} setLogoUrl={setLogoUrl} title={headerTitle} setTitle={setHeaderTitle} docNumber={docNumber} setDocNumber={setDocNumber} revision={headerRevision} setRevision={setHeaderRevision} issuedDate={headerIssuedDate} setIssuedDate={setHeaderIssuedDate} revisionDate={headerRevisionDate} setRevisionDate={setHeaderRevisionDate} />
+                  <ReportHeader 
+                    logoUrl={logoUrl} 
+                    setLogoUrl={setLogoUrl} 
+                    title={headerTitle} 
+                    setTitle={setHeaderTitle} 
+                    docNumber={docNumber} 
+                    setDocNumber={setDocNumber} 
+                    revision={headerRevision} 
+                    setRevision={setHeaderRevision} 
+                    issuedDate={headerIssuedDate} 
+                    setIssuedDate={setHeaderIssuedDate} 
+                    revisionDate={headerRevisionDate} 
+                    setRevisionDate={setHeaderRevisionDate} 
+                    readOnly={isPreview}
+                  />
                   
                   <div className="flex-1 overflow-hidden py-2">
                     <ReportGrid 
                       layout={page.layout || { sections: [] }} 
                       onChange={(newLayout) => updatePageLayout(index, newLayout)} 
+                      readOnly={isPreview}
                     />
                   </div>
                   
-                  <ReportFooter year={year} setYear={setYear} technicianName={technicianName} setTechnicianName={setTechnicianName} technicianSignatureUrl={technicianSignatureUrl} setTechnicianSignatureUrl={setTechnicianSignatureUrl} ownerName={ownerName} setOwnerName={setOwnerName} ownerSignatureUrl={ownerSignatureUrl} setOwnerSignatureUrl={setOwnerSignatureUrl} />
+                  <ReportFooter 
+                    year={year} 
+                    setYear={setYear} 
+                    technicianName={technicianName} 
+                    setTechnicianName={setTechnicianName} 
+                    technicianSignatureUrl={technicianSignatureUrl} 
+                    setTechnicianSignatureUrl={setTechnicianSignatureUrl} 
+                    ownerName={ownerName} 
+                    setOwnerName={setOwnerName} 
+                    ownerSignatureUrl={ownerSignatureUrl} 
+                    setOwnerSignatureUrl={setOwnerSignatureUrl} 
+                    readOnly={isPreview}
+                  />
                 </div>
               </A4Page>
             </div>

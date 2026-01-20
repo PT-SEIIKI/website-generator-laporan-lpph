@@ -10,9 +10,21 @@ interface HeaderProps {
   onExportWord?: () => void;
   isSaving?: boolean;
   showControls?: boolean;
+  isPreview?: boolean;
+  setIsPreview?: (preview: boolean) => void;
 }
 
-export function Header({ title, onSave, onPrint, onExportPDF, onExportWord, isSaving, showControls = true }: HeaderProps) {
+export function Header({ 
+  title, 
+  onSave, 
+  onPrint, 
+  onExportPDF, 
+  onExportWord, 
+  isSaving, 
+  showControls = true,
+  isPreview = false,
+  setIsPreview
+}: HeaderProps) {
   return (
     <header className="no-print sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between px-4">
@@ -30,6 +42,26 @@ export function Header({ title, onSave, onPrint, onExportPDF, onExportWord, isSa
               {title || "Report Generator"}
             </h1>
           </div>
+          {setIsPreview && (
+            <div className="flex items-center bg-muted rounded-md p-1 ml-2">
+              <Button
+                variant={!isPreview ? "secondary" : "ghost"}
+                size="sm"
+                className="h-7 text-xs"
+                onClick={() => setIsPreview(false)}
+              >
+                Edit
+              </Button>
+              <Button
+                variant={isPreview ? "secondary" : "ghost"}
+                size="sm"
+                className="h-7 text-xs"
+                onClick={() => setIsPreview(true)}
+              >
+                Preview
+              </Button>
+            </div>
+          )}
         </div>
 
         {showControls && (
