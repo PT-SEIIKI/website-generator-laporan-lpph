@@ -346,12 +346,6 @@ export default function ReportBuilder() {
                   <ReportHeader logoUrl={logoUrl} setLogoUrl={setLogoUrl} title={headerTitle} setTitle={setHeaderTitle} docNumber={docNumber} setDocNumber={setDocNumber} revision={headerRevision} setRevision={setHeaderRevision} issuedDate={headerIssuedDate} setIssuedDate={setHeaderIssuedDate} revisionDate={headerRevisionDate} setRevisionDate={setHeaderRevisionDate} />
                   
                   <div className="flex-1 overflow-hidden py-2">
-                    <IdentityTable 
-                      ownerName={ownerName} 
-                      setOwnerName={setOwnerName} 
-                      operationYear={year} 
-                      setOperationYear={setYear}
-                    />
                     <ReportGrid 
                       layout={page.layout || { sections: [] }} 
                       onChange={(newLayout) => updatePageLayout(index, newLayout)} 
