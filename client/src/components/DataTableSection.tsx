@@ -172,7 +172,7 @@ export function DataTableSection({ section, onChange, readOnly = false }: DataTa
                       <Input 
                         value={section.colLabels?.[i] || ""} 
                         onChange={e => {
-                          const currentLabels = section.colLabels || Array(section.numCols).fill("");
+                          const currentLabels = section.colLabels || Array(numEvalCols).fill("");
                           const newLabels = [...currentLabels];
                           newLabels[i] = e.target.value;
                           onChange({ colLabels: newLabels });
