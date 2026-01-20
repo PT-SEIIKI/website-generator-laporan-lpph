@@ -69,6 +69,7 @@ export type TableSection = {
   description?: string;
   numCols: number;
   colLabels?: string[];
+  dataColLabels?: string[];
   colWidths: string[];
   rows: TableRow[];
 };
