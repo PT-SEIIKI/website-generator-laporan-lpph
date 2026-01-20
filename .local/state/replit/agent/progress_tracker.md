@@ -30,3 +30,7 @@
 [x] 24. Reinstalled cross-env and ran database migration - application running successfully
 [x] 25. Final verification - reinstalled cross-env and tsx, workflow configured with webview on port 5000, application running successfully
 [x] 26. Reinstalled cross-env package and configured workflow - application serving on port 5000
+[x] 27. Redesigned home page with Vercel-inspired look and expanded tutorial
+[x] 28. Enabled inline editing for table column headers
+[x] 29. Improved Word export image handling for local URLs
+[x] 30. Cleaned up unused IdentityTable component and verified final build state
